@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'sample_node = zach_training.test_node:main'
+            'sample_node = zach_training.training_node:main'
         ],
     },
 )
