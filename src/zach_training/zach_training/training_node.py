@@ -14,7 +14,7 @@ class SampleNode(Node):
             topic='motor_currents',
             qos_profile=10
         )
-        self.timer_ = self.create_timer(0.5, self.send_motor_currents)
+        self.timer_ = self.create_timer(0.02, self.send_motor_currents)
     
     def send_motor_currents(self):
         message = MotorCurrents()
