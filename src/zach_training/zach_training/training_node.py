@@ -3,7 +3,7 @@
 import rclpy
 from rclpy.node import Node
 from serial_msgs.msg import MotorCurrents
-
+from geometry_msgs.msg import Twist
 
 class SampleNode(Node):
 
@@ -12,6 +12,7 @@ class SampleNode(Node):
         self.motor_publisher_ = self.create_publisher(
             msg_type=MotorCurrents,
             topic='motor_currents',
+            qos_profile=10
         )
         self.timer_ = self.create_timer(0.5, self.send_motor_currents)
     
