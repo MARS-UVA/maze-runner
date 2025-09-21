@@ -17,6 +17,7 @@ class SampleNode(Node):
         self.timer_ = self.create_timer(0.02, self.send_motor_currents)
     
     def send_motor_currents(self):
+        self.get_logger().info("Publishing motor currents")
         message = MotorCurrents()
         message.left_wheels = 100
         message.right_wheels = 154
