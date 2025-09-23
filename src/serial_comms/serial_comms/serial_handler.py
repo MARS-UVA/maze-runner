@@ -33,7 +33,7 @@ class SerialHandler:
 		# self.SER.write(bytes([START]))
 		# self.SER.write(header.to_bytes(self.bytesPerMotor, byteorder="big"))
 		# logger.warn(f"Wrate {data}")
-		self.SER.write(bytes([255]) + bytes(data)) # write the data to serial port
+		self.SER.write(bytes(data)) # write the data to serial port
 		logger.info(f"Wrote {data} to microcontroller")
 
 	def readMsg(self, logger=None):
