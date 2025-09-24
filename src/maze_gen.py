@@ -2,6 +2,7 @@ import copy
 import random
 import time
 from operator import index
+from unittest import case
 
 import pygame
 from pygame.locals import *
@@ -35,7 +36,7 @@ class Tile:
         self.bot = bot
         self.right = right
         self.role = role
-
+    
 class Maze:
     def __init__(self, row, col, start, end, num_sols):
         self.row = row
@@ -380,6 +381,163 @@ class Maze:
 
             # Draws the surface object to the screen.
             pygame.display.update()
+
+def hug_left(self, Maze):
+    #Coordinates for the exit sequence
+    end=Maze.end
+    #list map pairing
+    path_list=list()
+    path_map=map(tuple,path_list)
+
+    #current row, column pair
+    cur_row=0
+    cur_col=0
+    next_row=0
+    next_col=0
+
+    #starting tile
+    cur_Tile=Maze.maze[cur_row][cur_col]
+
+    #intializing random next tile
+    next_Tile=Tile(True,True,True,True,True)
+
+    #intializing left right up and down
+    left=cur_Tile.left
+    right=cur_Tile.right
+    top=cur_Tile.top
+    bottom=cur_Tile.bottom
+
+    #can update this to give initial orientation
+    orientation=0
+
+    while (cur_row,cur_col)!=end:
+        if not left:
+            #go left
+            #run into an issue when directios begin to change
+            next_row,next_col=move_direction("Left", orientation, cur_row, cur_col)
+            orientation+=90
+        elif not top:
+            #go straight
+            next_row, next_col=move_direction("Up", orientation, cur_row, cur_col)
+        elif not right:
+            #go right
+            next_row, next_col=move_direction("Right", orientation, cur_row, cur_col)
+            orientation+=270
+        else:
+            next_row, next_col=move_direction("Down", orientation, cur_row, cur_col)
+            orientation+=180
+            #turn around
+        #Set next_tile to new row,col pair
+        next_Tile = Maze.maze[cur_row][cur_col]
+
+        #update the direction the robot is facing
+        left,top,right,bottom = update_direction(orientation,next_Tile)
+
+        if (next_row,next_col) in path_map:
+            #if we are back tracking remove the paths that weve already stepped on
+            path_list.remove((cur_row,cur_col))
+
+        #add new tile to list and map and then move from cur to next
+        path_list.append((next_row,next_col))
+        path_map = map(tuple, path_list)
+
+        cur_Tile=next_Tile
+        cur_row=next_row
+        cur_col=next_col
+
+def move_direction(direction, orientation, row, col):
+    match direction:
+        case "Left":
+            match orientation:
+                case 0:
+                    #decrease column
+                    col-=1
+                case 90:
+                    #increase row
+                    row+=1
+                case 180:
+                    #increase col
+                    col+=1
+                case 270:
+                    #decrease row
+                    row-=1
+        case "Right":
+            match orientation:
+                case 0:
+                    # increase col
+                    col += 1
+                case 90:
+                    # decrease row
+                    row -= 1
+                case 180:
+                    # decrease col
+                    col -= 1
+                case 270:
+                    # increase row
+                    row += 1
+        case "Up":
+            match orientation:
+                case 0:
+                    # decrease row
+                    row -= 1
+                case 90:
+                    # decrease col
+                    col -= 1
+                case 180:
+                    # increase row
+                    row += 1
+                case 270:
+                    # increase col
+                    col += 1
+
+        case "Down":
+            match orientation:
+                case 0:
+                    # increase row
+                    row += 1
+                case 90:
+                    # increase col
+                    col += 1
+                case 180:
+                    # decrease row
+                    row -= 1
+                case 270:
+                    # decrease col
+                    col -= 1
+    return row,col
+
+def update_direction(direction, next_Tile):
+    #mod by 360 to return back to 0-270
+    direction=direction%360
+
+    #base case is facing up
+    left = next_Tile.left
+    top = next_Tile.top
+    right = next_Tile.right
+    bottom = next_Tile.bottom
+
+    #switching the orientation of the robot
+
+    match direction:
+        #facing left
+        case 90:
+            left=next_Tile.bottom
+            top=next_Tile.left
+            right=next_Tile.top
+            bottom=next_Tile.right
+        #facing down
+        case 180:
+            left = next_Tile.right
+            top = next_Tile.bottom
+            right = next_Tile.left
+            bottom = next_Tile.top
+        #facing right
+        case 270:
+            left = next_Tile.top
+            top = next_Tile.right
+            right = next_Tile.bottom
+            bottom = next_Tile.left
+    return left,top,right,bottom
 
 
 if __name__ == "__main__":
