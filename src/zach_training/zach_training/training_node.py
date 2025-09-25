@@ -20,7 +20,6 @@ class SampleNode(Node):
             qos_profile=1,
             callback=self.send_motor_currents
         )
-        self.timer_ = self.create_timer(0.02, self.send_motor_currents)
     
     def send_motor_currents(self, feedback):
         self.get_logger().info("Publishing motor currents")
