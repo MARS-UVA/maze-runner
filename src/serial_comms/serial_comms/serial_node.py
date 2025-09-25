@@ -50,7 +50,7 @@ class SerialNode(Node):
             self.get_logger().warn(f"Ultrasonic data: {data[0]}")
             self.feedback_publisher.publish(sensor_value)
         else:
-            self.feedback_publisher.publish(-1) # send -1 if no data
+            self.feedback_publisher.publish(us_sensor = 255) # send 255 if no data
             self.get_logger().warn("no data")
 
 def main(args=None):
