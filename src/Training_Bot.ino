@@ -111,8 +111,6 @@ class Ultrasonic {
 
       Serial.write(&header, 1);
       Serial.write(&distanceByte, 1);
-
-      delay(100);
     }
 };
 
