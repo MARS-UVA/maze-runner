@@ -2,7 +2,7 @@
 
 import rclpy
 from rclpy.node import Node
-from serial_msgs.msg import MotorCurrents
+from serial_msgs.msg import MotorCurrents, Feedback
 from geometry_msgs.msg import Twist
 
 class SampleNode(Node):
@@ -12,15 +12,26 @@ class SampleNode(Node):
         self.motor_publisher_ = self.create_publisher(
             msg_type=MotorCurrents,
             topic='motor_currents',
-            qos_profile=10
+            qos_profile=1
+        )
+        self.feedback_subscriber_ = self.create_subscription(
+            msg_type=Feedback,
+            topic='feedback',
+            qos_profile=1,
+            callback=self.send_motor_currents
         )
         self.timer_ = self.create_timer(0.02, self.send_motor_currents)
     
-    def send_motor_currents(self):
+    def send_motor_currents(self, feedback):
         self.get_logger().info("Publishing motor currents")
         message = MotorCurrents()
-        message.left_wheels = 100
-        message.right_wheels = 154
+
+        if feedback.us_sensor < 50:
+            message.left_wheels = 127
+            message.right_wheels = 127
+        else:
+            message.left_wheels = 154
+            message.right_wheels = 154
         self.motor_publisher_.publish(message)
 
     
