@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'serial = serial_comms.serial_node:main'
+            'serial = serial_comms.serial_node:main',
+            'motorcontroller = serial_comms.motorcontroller:main',
         ],
     },
 )
