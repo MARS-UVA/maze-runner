@@ -12,6 +12,7 @@ class MotorControllerNode(Node):
         self.publisher = self.create_publisher(
             msg_type=MotorControllerNode,
             topic='motor_currents',
+            qos_profile = 1
         )
         self.timer = self.create_timer(0.02, self.send_velocity)
 
