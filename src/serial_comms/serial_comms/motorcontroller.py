@@ -10,7 +10,7 @@ class MotorControllerNode(Node):
     def __init__(self):
         super().__init__('test_node')
         self.publisher = self.create_publisher(
-            msg_type=MotorControllerNode,
+            msg_type=MotorCurrents,
             topic='motor_currents',
             qos_profile = 1
         )
