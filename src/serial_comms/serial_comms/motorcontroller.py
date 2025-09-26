@@ -24,18 +24,18 @@ class MotorControllerNode(Node):
         self.publisher.publish(message)
 
 
-    def main(args=None):
-        rclpy.init(args=args)
+def main(args=None):
+    rclpy.init(args=args)
 
 
-        node = MotorControllerNode()
+    node = MotorControllerNode()
 
 
-        rclpy.spin(node)
+    rclpy.spin(node)
 
 
-        node.destroy_node()
-        rclpy.shutdown()
+    node.destroy_node()
+    rclpy.shutdown()
 
 
 if __name__ == '__main__':
