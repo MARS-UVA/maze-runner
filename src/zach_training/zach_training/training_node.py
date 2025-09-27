@@ -37,6 +37,7 @@ class SampleNode(Node):
             if iter < 50:             
                 message.left_wheels = 127
                 message.right_wheels = 127
+                self.get_logger().info("Stopping da wheels")
 
         self.motor_publisher_.publish(message)
 
