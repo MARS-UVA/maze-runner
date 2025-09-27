@@ -23,21 +23,26 @@ class SampleNode(Node):
         )
     
     def send_motor_currents(self, feedback):
-        if len(self.feedback_queue) > 5:
-            self.feedback_queue.pop()
-        self.feedback_queue.insert(0, feedback.us_sensor)
-        
         self.get_logger().info("Publishing motor currents")
         message = MotorCurrents()
 
         message.left_wheels = 154
         message.right_wheels = 154
 
+        if feedback.us_sensor < 30:
+            message.left_wheels = 127
+            message.right_wheels = 127
+
+        """if len(self.feedback_queue) > 5:
+            self.feedback_queue.pop()
+        self.feedback_queue.insert(0, feedback.us_sensor)
+        
+
         for iter in self.feedback_queue:
             if iter < 50:             
                 message.left_wheels = 127
                 message.right_wheels = 127
-                self.get_logger().info("Stopping da wheels")
+                self.get_logger().info("Stopping da wheels")"""
 
         self.motor_publisher_.publish(message)
 
