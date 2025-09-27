@@ -1,5 +1,6 @@
 /* Authors:
 Carlos Giron
+Zachary Parsia
 */
 
 /* NOTES:
@@ -105,12 +106,22 @@ class Ultrasonic {
 
       duration = pulseIn(US_ECHO, HIGH);
       distance = (duration*.0343)/2;
+      uint8_t distanceByte;
       
       uint8_t header = 0xAA;
-      uint8_t distanceByte = (uint8_t)distance;
+
+      if (distance >= 255) {
+        distanceByte = (uint8_t) 255;
+      }
+      else  {
+        distanceByte = (uint8_t)distance;
+      }
 
       Serial.write(&header, 1);
       Serial.write(&distanceByte, 1);
+
+      //Serial.println(distance);
+      //Serial.println(distanceByte);
 
       delay(100);
     }
@@ -133,12 +144,14 @@ Ultrasonic frontSense(US_TRIG, US_ECHO);
 void control_process(void) {
   if (Serial.available() > 0) {
 
-    byte data[2]; // Left, Right 
-    Serial.readBytes(data, 2);
+    byte data[3]; // Left, Right 
+    Serial.readBytes(data, 3);
 
-    for (int i=0; i<2; i++) {
-      wheelAr[i*2].tele_drive(data[i]);
-      wheelAr[i*2+1].tele_drive(data[i]);
+    if (data[0] == 255) {
+      for (int i=0; i<2; i++) {
+        wheelAr[i*2].tele_drive(data[i+1]);
+        wheelAr[i*2+1].tele_drive(data[i+1]);
+      }
     }
   }
 
@@ -148,8 +161,8 @@ void control_process(void) {
 bool forward = true;
 void test_process(void) {
   for (int i=0; i<2; i++) {
-    wheelAr[i].drive(150, forward);
-    wheelAr[i+1].drive(150, !forward);
+    wheelAr[i*2].drive(150, forward);
+    wheelAr[i*2+1].drive(150, !forward);
   }
   delay(2500);
   forward = !forward;
