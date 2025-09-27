@@ -148,8 +148,8 @@ void control_process(void) {
 bool forward = true;
 void test_process(void) {
   for (int i=0; i<2; i++) {
-    wheelAr[i].test_drive(150, forward);
-    wheelAr[i+1].test_drive(150, !forward);
+    wheelAr[i].drive(150, forward);
+    wheelAr[i+1].drive(150, !forward);
   }
   delay(2500);
   forward = !forward;
