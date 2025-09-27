@@ -9,6 +9,7 @@ class SampleNode(Node):
 
     def __init__(self):
         super().__init__('test_node')
+        self.feedback_queue = []
         self.motor_publisher_ = self.create_publisher(
             msg_type=MotorCurrents,
             topic='motor_currents',
@@ -22,15 +23,21 @@ class SampleNode(Node):
         )
     
     def send_motor_currents(self, feedback):
+        if len(self.feedback_queue) > 5:
+            self.feedback_queue.pop()
+        self.feedback_queue.insert(0, feedback.us_sensor)
+        
         self.get_logger().info("Publishing motor currents")
         message = MotorCurrents()
 
-        if feedback.us_sensor < 50:
-            message.left_wheels = 127
-            message.right_wheels = 127
-        else:
-            message.left_wheels = 154
-            message.right_wheels = 154
+        message.left_wheels = 154
+        message.right_wheels = 154
+
+        for iter in self.feedback_queue:
+            if iter < 50:             
+                message.left_wheels = 127
+                message.right_wheels = 127
+
         self.motor_publisher_.publish(message)
 
     
