@@ -22,12 +22,11 @@ class SerialNode(Node):
             topic='motor_currents',
             callback=self.listener_callback,
             qos_profile=QoSProfile(history=QoSHistoryPolicy.KEEP_LAST, depth= 1, reliability=QoSReliabilityPolicy.RELIABLE)) #1 queued message
-        # FEEDBACK COMMENTED OUT FOR NOW
-        # self.feedback_publisher = self.create_publisher(
-        #     msg_type=Feedback,
-        #     topic='feedback',
-        #     qos_profile=1
-        # )
+        self.feedback_publisher = self.create_publisher(
+            msg_type=Feedback,
+            topic='feedback',
+            qos_profile=1
+        )
         self.send_timer = self.create_timer(SEND_DELAY_SEC, self.sendCurrents)
         self.recv_timer = self.create_timer(RECV_DELAY_SEC, self.readFromNucleo)
         self.serial_handler = SerialHandler()
