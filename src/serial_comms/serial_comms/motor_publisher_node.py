@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from serial_msgs.msg import Feedback 
+
 import rclpy
 from rclpy.node import Node
 # Import the custom message type your serial_node uses
-from serial_msgs.msg import MotorCurrents 
+from serial_msgs.msg import MotorCurrents, Feedback
 
 class MotorPublisherNode(Node):
 
