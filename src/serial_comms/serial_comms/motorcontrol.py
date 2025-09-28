@@ -32,7 +32,7 @@ class SuperAwesomeAndRealNode(Node):
 
     def send_velocity(self, feedback):
         message = MotorCurrents()
-        #0 - 255, 125 = 0, 127 > forward, < 127 backwards
+        #0 - 255, 127 = 0, 127 > forward, < 127 backwards
         
         distance_feedback = feedback.us_sensor
         r_velo = 100
