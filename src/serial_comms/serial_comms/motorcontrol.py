@@ -4,38 +4,50 @@
 import rclpy
 from rclpy.node import Node
 from serial_msgs.msg import MotorCurrents
+from serial_msgs.msg import Feedback
 
 
 class SuperAwesomeAndRealNode(Node):
 
 
 
- def __init__(self):
-    super().__init__('testnode')
+    def __init__(self):
+        super().__init__('testnode')
 
-     self.publisher = self.create_publisher(
-            msg_type=MotorCurrents,
-            topic='motor_currents',
-            qos_profile=10)
+        self.publisher = self.create_publisher(
+                msg_type=MotorCurrents,
+                topic='motor_currents',
+                qos_profile=10)
 
 
-    self.feedback_subscriber_ = self.create_subscription(
-        msg_type = feedback,
-        topic = 'feedback',
-        qos_profile = 1,
-        callback = self.send_motor_currents
-    )
+        self.feedback_subscriber_ = self.create_subscription(
+            msg_type = Feedback,
+            topic = 'feedback',
+            qos_profile = 1,
+            callback = self.send_velocity
+        )
 
-     self.timer = self.create_timer(0.02, self.send_velocity)
-     self.get_logger().info("gorb")
 
-      def send_velocity(self):
+        self.get_logger().info("gorb")
+
+    def send_velocity(self, feedback):
         message = MotorCurrents()
         #0 - 255, 125 = 0, 127 > forward, < 127 backwards
         
-
+        distance_feedback = feedback.us_sensor
         r_velo = 100
         l_velo = 220
+
+        if distance_feedback < 30:
+            r_velo = 0
+            l_velo = 0
+    
+
+
+
+
+
+      
 
         message.left_wheels = l_velo
         message.right_wheels = r_velo
