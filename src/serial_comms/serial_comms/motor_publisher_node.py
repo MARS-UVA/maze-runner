@@ -31,7 +31,7 @@ class MotorPublisherNode(Node):
     def send_motor_command(self, feedback):
         # 3. Create a MotorCurrents message instead of a Twist message.
         message = MotorCurrents()
-        if feedback.us_sensor <60:
+        if feedback.us_sensor < 15:
             message.left_wheels = 127
             message.right_wheels = 127
         else:
