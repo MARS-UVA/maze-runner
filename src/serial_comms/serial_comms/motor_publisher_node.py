@@ -22,22 +22,25 @@ class MotorPublisherNode(Node):
         self.feedback_subscriber = self.create_subscription(
             msg_type = Feedback,
             topic='feedback',
-            qos_profile=1
+            qos_profile=1,
+            callback = self.send_motor_command
         )
             
-        self.timer = self.create_timer(0.5, self.send_motor_command)
         self.get_logger().info("Motor publisher node started. Sending commands...")
 
-    def send_motor_command(self):
+    def send_motor_command(self, feedback):
         # 3. Create a MotorCurrents message instead of a Twist message.
         message = MotorCurrents()
-        
+        if feedback.us_sensor <60:
+            message.left_wheels = 127
+            message.right_wheels = 127
+        else:
         # 4. Set the wheel current values. The serial_node expects integers.
         #    127 is still, >127 is forward, <127 is backward.
-        #    Let's make it move forward.
-        message.left_wheels = 150 
-        message.right_wheels = 150
-        
+            #    Let's make it move forward.
+            message.left_wheels = 150 
+            message.right_wheels = 150
+            
         self.publisher.publish(message)
         self.get_logger().info(f'Publishing: left={message.left_wheels}, right={message.right_wheels}')
 
