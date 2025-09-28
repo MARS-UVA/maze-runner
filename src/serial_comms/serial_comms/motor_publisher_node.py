@@ -17,6 +17,12 @@ class MotorPublisherNode(Node):
             msg_type=MotorCurrents,
             topic='motor_currents',
             qos_profile=10)
+        
+        self.feedback_subscriber = self.create_subscription(
+            msg_type = Feedback,
+            topic='feedback',
+            qos_profile=1
+        )
             
         self.timer = self.create_timer(0.5, self.send_motor_command)
         self.get_logger().info("Motor publisher node started. Sending commands...")
