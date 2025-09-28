@@ -35,8 +35,8 @@ class SuperAwesomeAndRealNode(Node):
         #0 - 255, 127 = 0, 127 > forward, < 127 backwards
         
         distance_feedback = feedback.us_sensor
-        r_velo = 100
-        l_velo = 220
+        r_velo = 150
+        l_velo = 150
 
         if distance_feedback < 30:
             r_velo = 127
