@@ -8,8 +8,8 @@ from serial_msgs.msg import MotorCurrents
 from serial_msgs.msg import Feedback
 
 MOTOR_CURRENT_MSG = 0
-SEND_DELAY_SEC = 0.02
-RECV_DELAY_SEC = 0.03
+SEND_DELAY_SEC = 0.5
+RECV_DELAY_SEC = 0.5
 MOTOR_STILL = 127
 
 class SerialNode(Node):

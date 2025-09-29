@@ -33,17 +33,6 @@ class SampleNode(Node):
             message.left_wheels = 127
             message.right_wheels = 127
 
-        """if len(self.feedback_queue) > 5:
-            self.feedback_queue.pop()
-        self.feedback_queue.insert(0, feedback.us_sensor)
-        
-
-        for iter in self.feedback_queue:
-            if iter < 50:             
-                message.left_wheels = 127
-                message.right_wheels = 127
-                self.get_logger().info("Stopping da wheels")"""
-
         self.motor_publisher_.publish(message)
 
     
