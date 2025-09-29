@@ -1,6 +1,5 @@
 /* Authors:
 Carlos Giron
-Zachary Parsia
 */
 
 /* NOTES:
@@ -117,9 +116,11 @@ class Ultrasonic {
         distanceByte = (uint8_t)distance;
       }
 
+      // for real
       Serial.write(&header, 1);
       Serial.write(&distanceByte, 1);
 
+      // for testing
       //Serial.println(distance);
       //Serial.println(distanceByte);
 
@@ -142,7 +143,7 @@ Wheel wheelAr[4] = {frontLeft, backLeft,frontRight, backRight};
 Ultrasonic frontSense(US_TRIG, US_ECHO);
 
 void control_process(void) {
-  if (Serial.available() > 0) {
+  while (Serial.available() > 0) {
 
     byte data[3]; // Left, Right 
     Serial.readBytes(data, 3);
@@ -175,10 +176,12 @@ void test_process(void) {
 
 void setup()
 {
+  //Serial.begin(9600); // for testing
   Serial.begin(115200);
 }
 
 void loop()
 {
+  //test_process(); // for testing
   control_process();
 }
