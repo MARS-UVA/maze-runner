@@ -39,20 +39,26 @@ class SuperAwesomeAndRealNode(Node):
 
         # add code later when there are more sensors 
 
-        r_velo = 150
-        l_velo = 150
+     
 
         if distance_feedback < 30:
 
-            self.turn_left()    
+            self.turn_left(message)
+        else 
+
+            r_velo = 127
+            l_velo = 127
+            message.left_wheels = l_velo
+            message.right_wheels = r_velo
+            self.publisher.publish(message) 
+
            # r_velo = 127
            # l_velo = 127
       
-        message.left_wheels = l_velo
-        message.right_wheels = r_velo
-        self.publisher.publish(message)   
+       
+      
 
-    def turn_left(self):   
+    def turn_left(self, message):   
         start_time = time.time()
         while time_time() - start_time < 3:
             r_velo = 150
@@ -64,6 +70,9 @@ class SuperAwesomeAndRealNode(Node):
         l_velo = 127
         message.left_wheels = l_velo
         message.right_wheels = r_velo
+        self.publisher.publish(message)  
+
+        return r_velo, l_velo
 
 
 
