@@ -44,7 +44,7 @@ class SuperAwesomeAndRealNode(Node):
         if distance_feedback < 30:
 
             self.turn_left(message)
-        else 
+        else: 
 
             r_velo = 127
             l_velo = 127
