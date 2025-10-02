@@ -5,6 +5,7 @@ import rclpy
 from rclpy.node import Node
 from serial_msgs.msg import MotorCurrents
 from serial_msgs.msg import Feedback
+import time
 
 
 class SuperAwesomeAndRealNode(Node):
@@ -35,23 +36,38 @@ class SuperAwesomeAndRealNode(Node):
         #0 - 255, 127 = 0, 127 > forward, < 127 backwards
         
         distance_feedback = feedback.us_sensor
+
+        # add code later when there are more sensors 
+
         r_velo = 150
         l_velo = 150
 
         if distance_feedback < 30:
-            r_velo = 127
-            l_velo = 127
-    
 
-
-
-
-
+            self.turn_left()    
+           # r_velo = 127
+           # l_velo = 127
       
-
         message.left_wheels = l_velo
         message.right_wheels = r_velo
         self.publisher.publish(message)   
+
+    def turn_left(self):   
+        start_time = time.time()
+        while time_time() - start_time < 3:
+            r_velo = 150
+            l_velo = 100
+            message.left_wheels = l_velo
+            message.right_wheels = r_velo
+        
+        r_velo = 127
+        l_velo = 127
+        message.left_wheels = l_velo
+        message.right_wheels = r_velo
+
+
+
+
 
 def main(args=None):
     rclpy.init(args=args)
@@ -65,6 +81,7 @@ def main(args=None):
 
     node.destroy_node()
     rclpy.shutdown()
+
 
 
 if __name__ == '__main__':
