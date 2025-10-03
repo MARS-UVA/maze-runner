@@ -60,8 +60,8 @@ class SuperAwesomeAndRealNode(Node):
             message.right_wheels = r_velo
             self.publisher.publish(message) 
             self.get_logger().info("I'm stopped")
-            self.get_logger().info(message.left_wheels)
-            self.get_logger().info(message.right_wheels)
+            #self.get_logger().info(message.left_wheels)
+            #self.get_logger().info(message.right_wheels)
 
            # r_velo = 127
            # l_velo = 127
