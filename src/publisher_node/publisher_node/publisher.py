@@ -18,7 +18,7 @@ class SampleNode(Node):
             topic='feedback',
             qos_profile=1, 
             callback=self.send_velocity)
-        s#elf.timer = self.create_timer(0.5, self.send_velocity)
+        #self.timer = self.create_timer(0.5, self.send_velocity)
 
     def turn_left(self, feedback):
 
