@@ -41,10 +41,17 @@ class SuperAwesomeAndRealNode(Node):
 
      
 
-        if distance_feedback < 5:
+        if distance_feedback < 15:
+
+            r_velo = 150
+            l_velo = 100
+            message.left_wheels = l_velo
+            message.right_wheels = r_velo
+            self.publisher.publish(message)
+
 
             self.get_logger().info("I'm boutta turn it!")
-            self.turn_left(message)
+            #self.turn_left(message)
             self.get_logger().info("I'm done turning it!")
         else: 
             r_velo = 127
