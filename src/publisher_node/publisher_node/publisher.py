@@ -24,6 +24,7 @@ class SampleNode(Node):
 
         r_velo = 154
         l_velo = 100
+        self.get_logger().info(f"jsadhfjhsdjafhjdahsfjhdjkfhdjshafjdkshfjkashdkfjhdsjkakf: glob")
         
         return r_velo, l_velo
         
@@ -43,7 +44,8 @@ class SampleNode(Node):
 
         message.right_wheels = r_velo
         message.left_wheels = l_velo
-        
+        self.get_logger().info(f"jsadhfjhsdjafhjdahsfjhdjkfhdjshafjdkshfjkashdkfjhdsjkakf: VELOCITY!!!")
+
         self.publisher.publish(message)
 
 
