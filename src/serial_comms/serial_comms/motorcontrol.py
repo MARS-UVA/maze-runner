@@ -41,7 +41,7 @@ class SuperAwesomeAndRealNode(Node):
 
      
 
-        if distance_feedback < 30:
+        if distance_feedback < 5:
 
             self.get_logger().info("I'm boutta turn it!")
             self.turn_left(message)
