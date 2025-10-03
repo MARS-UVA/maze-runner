@@ -22,8 +22,8 @@ class SampleNode(Node):
 
     def turn_left(self, feedback):
 
-        r_velo = 154
-        l_velo = 100
+        r_velo = 230
+        l_velo = 24
         self.get_logger().info(f"jsadhfjhsdjafhjdahsfjhdjkfhdjshafjdkshfjkashdkfjhdsjkakf: glob")
         
         return r_velo, l_velo
