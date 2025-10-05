@@ -35,7 +35,9 @@ class SuperAwesomeAndRealNode(Node):
         message = MotorCurrents()
         #0 - 255, 127 = 0, 127 > forward, < 127 backwards
         
-        distance_feedback = feedback.us_sensor
+        distance_feedback = feedback.front_sensor
+        left_feedback = feedback.left_sensor
+        right_feedback = feedback.right_sensor
 
         # add code later when there are more sensors 
 
