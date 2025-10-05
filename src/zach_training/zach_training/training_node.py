@@ -29,7 +29,7 @@ class SampleNode(Node):
         message.left_wheels = 154
         message.right_wheels = 154
 
-        if feedback.us_sensor < 30:
+        if feedback.front_sensor < 30:
             message.left_wheels = 127
             message.right_wheels = 127
 
