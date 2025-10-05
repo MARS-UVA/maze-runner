@@ -41,16 +41,29 @@ class SuperAwesomeAndRealNode(Node):
 
         # add code later when there are more sensors 
 
-     
-
         if distance_feedback < 20 and not self.is_turning:
-            self.turn_left(message, "left", 3)
+            self.turn_left(message, "left", 3.75)
 
            # r_velo = 127
            # l_velo = 127
       
        
-      
+    def wall_hugger(self, feedback):
+        message = MotorCurrents()
+        distance_feedback = feedback.front_sensor
+        left_feedback = feedback.left_sensor
+        if self.is_turning:
+            pass
+        elif left_feedback > 20:
+            self.turn_left(message, "left", 3.75)
+        elif distance_feedback > 20: 
+            r_velo = 150
+            l_velo = 150
+            message.left_wheels = l_velo
+            message.right_wheels = r_velo
+            self.publisher.publish(message)  
+        else:
+            self.turn_left(message, "right", 3.75)
 
     def turn_left(self, message,dir, time):   
         if dir == "left":
@@ -66,10 +79,17 @@ class SuperAwesomeAndRealNode(Node):
         #self.get_logger().info()
         self.publisher.publish(message)  
         self.is_turning = True
-        self.turn_timer = self.create_timer(time, self.stop)
-        
-
-    def stop(self):
+        self.turn_timer = self.create_timer(time, self.stop, dir = dir)
+    
+    def stop(self, dir):
+        if dir == "left":
+            r_velo = 150
+            l_velo = 150
+            message.left_wheels = l_velo
+            message.right_wheels = r_velo
+            self.publisher.publish(message)
+            self.turn_timer.cancel()
+            self.turn_timer = self.create_timer(2, self.stop, dir = "forward")
         message = MotorCurrents()
         r_velo = 127
         l_velo = 127
