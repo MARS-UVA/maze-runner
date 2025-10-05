@@ -35,13 +35,17 @@ class SuperAwesomeAndRealNode(Node):
         message = MotorCurrents()
         #0 - 255, 127 = 0, 127 > forward, < 127 backwards
         
-        distance_feedback = feedback.us_sensor
+        front_df = feedback.front_sensor
+        left_df = feedback.left_sensor
+        right_df = feedback.right_sensor
+
+
 
         # add code later when there are more sensors 
 
      
 
-        if distance_feedback < 15:
+        if front_df < 15:
 
             r_velo = 150
             l_velo = 100
