@@ -3,9 +3,10 @@
 import rclpy #type: ignore
 from rclpy.node import Node #type: ignore
 from serial_msgs.msg import MotorCurrents, Feedback
+import time
 
 STOP_VAL = 127
-FORWARD_VAL = STOP_VAL + 27
+FORWARD_VAL = STOP_VAL + 23
 BACKWARD_VAL = STOP_VAL - 27
 
 class MotorControllerNode(Node):
@@ -23,22 +24,43 @@ class MotorControllerNode(Node):
             callback=self.send_velocity,
             qos_profile=10
         )
+        self.turn_timer = None
+        self.is_turning = False
 
     def send_velocity(self, feedback):
         message = MotorCurrents()
         if feedback.front_sensor > 20 and feedback.left_sensor > 20 and feedback.right_sensor > 20: # stop
-            message.left_wheels = STOP_VAL
-            message.right_wheels = STOP_VAL
+            self.stop()
         elif feedback.right_sensor > 15: # right opening, turn right
-            message.left_wheels = FORWARD_VAL
-            message.right_wheels = BACKWARD_VAL
+            self.turn(message, "right", 3.35)
         elif feedback.left_sensor > 15: # left opening, turn left
-            message.left_wheels = BACKWARD_VAL
-            message.right_wheels = FORWARD_VAL
+            self.turn(message, "left", 3.35)
         else: # go forward
             message.left_wheels = FORWARD_VAL
             message.right_wheels = FORWARD_VAL
         self.publisher.publish(message)
+
+def turn(self, message, dir, time):   
+    if dir == "right":
+        message.left_wheels = FORWARD_VAL
+        message.right_wheels = BACKWARD_VAL
+    else: # assume left
+        message.left_wheels = BACKWARD_VAL
+        message.right_wheels = FORWARD_VAL
+    self.get_logger().info()
+    self.publisher.publish(message)  
+    self.is_turning = True
+    self.turn_timer = self.create_timer(time, self.stop)
+        
+
+def stop(self):
+    message = MotorCurrents()
+    message.left_wheels = STOP_VAL
+    message.right_wheels = STOP_VAL
+    self.publisher.publish(message)
+    self.turn_timer.cancel()
+    self.is_turning = False
+    self.turn_timer = None
 
 def main(args=None):
     rclpy.init(args=args)
