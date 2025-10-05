@@ -75,7 +75,7 @@ class SuperAwesomeAndRealNode(Node):
 
     def turn_left(self, message):   
         start_time = time.time()
-        while time.time() - start_time < 3:
+        while time.time() - start_time < 3000:
             r_velo = 150
             l_velo = 100
             message.left_wheels = l_velo
