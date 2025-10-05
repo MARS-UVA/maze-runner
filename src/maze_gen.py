@@ -571,6 +571,8 @@ class Maze:
         next_row = 0
         next_col = 0
 
+        path_list.append((cur_row,cur_col))
+
         # starting tile
         cur_Tile = maze.maze[cur_row][cur_col]
 
@@ -584,7 +586,7 @@ class Maze:
         bottom = cur_Tile.bot
 
         # can update this to give initial orientation
-        orientation = 90
+        orientation = 270
 
         left, top, right, bottom = maze.update_direction(orientation, cur_Tile)
 
@@ -618,15 +620,14 @@ class Maze:
                 '''
             else:
                 #gets the most recent key point from the stack and then moves back through until it hits the point
-                print(k_points)
+
                 k_point=k_points.pop()
 
-                next_row,next_col=k_point[0]
+                next_tile=k_point[0]
                 orientation=k_point[1]%360
-                i=len(path_list)-1
-                print(path_list)
-                while path_list[i]!=k_point:
-                    path_list.remove(path_list[i])
+
+                while path_list[-1]!=next_tile:
+                    path_list.remove(path_list[-1])
 
                 #Sets the path that the robot has gone down to false
                 next_Tile=maze.maze[next_row][next_col]
