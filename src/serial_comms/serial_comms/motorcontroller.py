@@ -26,14 +26,14 @@ class MotorControllerNode(Node):
 
     def send_velocity(self, feedback):
         message = MotorCurrents()
-        if feedback.front > 30 and feedback.left > 30 and feedback.right > 30: # stop
+        if feedback.front_sensor > 30 and feedback.left_sensor > 30 and feedback.right_sensor > 30: # stop
             message.left_wheels = STOP_VAL
             message.right_wheels = STOP_VAL
-        elif feedback.front < 30: # detect wall
-            if feedback.left < 30 and feedback.right > 30: # turn right
+        elif feedback.front_sensor < 30: # detect wall
+            if feedback.left_sensor < 30 and feedback.right_sensor > 30: # turn right
                 message.left_wheels = FORWARD_VAL
                 message.right_wheels = BACKWARD_VAL
-            elif feedback.left < 30 and feedback.right > 30: # turn left
+            elif feedback.left_sensor < 30 and feedback.right_sensor > 30: # turn left
                 message.left_wheels = BACKWARD_VAL
                 message.right_wheels = FORWARD_VAL
             else: # go backward
