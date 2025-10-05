@@ -373,7 +373,7 @@ class Maze:
                     lines_path.append((100+tile[0]*side_length+side_length/2,100+tile[1]*side_length+side_length/2))
             if path:
                 for tile in path:
-                    lines_path.append((100+tile[0]*side_length+side_length/2,100+tile[1]*side_length+side_length/2))
+                    lines_path.append((100+tile[1]*side_length+side_length/2,100+tile[0]*side_length+side_length/2))
 
             if lines_path:
                 pygame.draw.lines(window, (255,0,0), False, lines_path, 4)
@@ -443,6 +443,7 @@ class Maze:
             if (next_row,next_col) in path_map:
                 #if we are back tracking remove the paths that weve already stepped on
                 path_list.remove((cur_row,cur_col))
+                path_list.remove((next_row,next_col))
 
             #add new tile to list and map and then move from cur to next
             path_list.append((next_row,next_col))
@@ -553,10 +554,112 @@ class Maze:
                 bottom = next_Tile.left
         return left,top,right,bottom
 
+    def depth_first_search(self, maze):
+        # Coordinates for the exit sequence
+        end = maze.end
+
+        # list map pairing
+        path_list = list()
+        path_list.append(maze.start)
+        path_map = map(tuple, path_list)
+        wrong_path = list()
+        wrong_map = map(tuple, wrong_path)
+        k_points=[]
+
+        # current row, column pair
+        cur_row, cur_col = maze.start
+        next_row = 0
+        next_col = 0
+
+        # starting tile
+        cur_Tile = maze.maze[cur_row][cur_col]
+
+        # intializing random next tile
+        next_Tile = Tile(True, True, True, True, True)
+
+        # intializing left right up and down
+        left = cur_Tile.left
+        right = cur_Tile.right
+        top = cur_Tile.top
+        bottom = cur_Tile.bot
+
+        # can update this to give initial orientation
+        orientation = 90
+
+        left, top, right, bottom = maze.update_direction(orientation, cur_Tile)
+
+        while (cur_row, cur_col) != end:
+            print(cur_row, cur_col)
+            print(not left, not top, not right, not bottom)
+            '''
+            if left or right save key point and orientation in a stack
+            '''
+            if not top:
+                # go straight
+                #if there are other paths mark down k_point
+                if not left or not right:
+                    k_points.append(((cur_row, cur_col), orientation))
+
+                next_row, next_col = maze.move_direction("Up", orientation, cur_row, cur_col)
+            elif not left:
+                # go left
+                #if there are other paths mark down k_point
+                if not right:
+                    k_points.append(((cur_row, cur_col), orientation))
+                # run into an issue when directios begin to change
+                next_row, next_col = maze.move_direction("Left", orientation, cur_row, cur_col)
+                orientation += 90
+            elif not right:
+                # go right
+                next_row, next_col = maze.move_direction("Right", orientation, cur_row, cur_col)
+                orientation += 270
+                '''
+                if none of the options are available return to last key point
+                '''
+            else:
+                #gets the most recent key point from the stack and then moves back through until it hits the point
+                print(k_points)
+                k_point=k_points.pop()
+
+                next_row,next_col=k_point[0]
+                orientation=k_point[1]%360
+                i=len(path_list)-1
+                print(path_list)
+                while path_list[i]!=k_point:
+                    path_list.remove(path_list[i])
+
+                #Sets the path that the robot has gone down to false
+                next_Tile=maze.maze[next_row][next_col]
+                if next_Tile.top==True:
+                    next_Tile.top=False
+                elif next_Tile.left==True:
+                    next_Tile.left=False
+                elif next_Tile.right==True:
+                    next_Tile.right=False
+
+            # Set next_tile to new row,col pair
+            next_Tile = maze.maze[next_row][next_col]
+
+            # update the direction the robot is facing
+            left, top, right, bottom = maze.update_direction(orientation, next_Tile)
+
+            # add new tile to list and map and then move from cur to next
+            path_list.append((next_row, next_col))
+            path_map = map(tuple, path_list)
+
+            cur_row = next_row
+            cur_col = next_col
+            cur_Tile = next_Tile
+
+        print(path_list)
+        print("Maze Finished!")
+        return path_list
+
 
 if __name__ == "__main__":
     my_maze = Maze(10, 10, "default", "default", 0)
 
-    path_list=my_maze.hug_left(my_maze)
-    my_maze.disp_maze(path=path_list)
+    my_maze.disp_maze()
+    path_list=my_maze.depth_first_search(my_maze)
+    #my_maze.disp_maze(path=path_list)
 
