@@ -32,7 +32,7 @@ Repo for Zach's Maze Runner Robot mentor groups
 2. run `docker build -t image-name:tag .` where image-name:tag is the name of your docker image
     * if you need internet for building, follow setup for wired connection
     * if you're building for the pi on a computer with amd64 hardware, you need to include `--platform linux/arm64`
-3. run `docker run -it --privileged image-name:tag` to start the container
+3. run `docker run -it --rm --privileged image-name:tag` to start the container
     * This step should be done connected over wifi, not wired
 
 connect via wifi for this step, not wired
