@@ -46,7 +46,6 @@ class SerialNode(Node):
     def readFromNucleo(self):
         data = self.serial_handler.readMsg(logger=self.get_logger())
         if data:
-            self.get_logger().warn(f"Raw_data = {data}, {data[0]}")
             sensor_values = Feedback(front_sensor = data[0], right_sensor = data[1], left_sensor = data[2])
             self.get_logger().warn(f"Ultrasonic data: Front: {data[0]}, Right: {data[1]}, Left: {data[2]}")
             self.feedback_publisher.publish(sensor_values)

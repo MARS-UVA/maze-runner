@@ -32,6 +32,12 @@ class SampleNode(Node):
         if feedback.front_sensor < 30:
             message.left_wheels = 127
             message.right_wheels = 127
+        elif feedback.right_sensor < 30:
+            message.left_wheels = 127
+            message.right_wheels = 127
+        elif feedback.left_sensor < 30:
+            message.left_wheels = 127
+            message.right_wheels = 127
 
         self.motor_publisher_.publish(message)
 
