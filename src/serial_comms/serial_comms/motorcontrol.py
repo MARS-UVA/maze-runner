@@ -63,7 +63,6 @@ class SuperAwesomeAndRealNode(Node):
         message.right_wheels = r_velo
         
         self.get_logger().info("I'm turning lefting it!")
-        self.get_logger().info(message)
         #self.get_logger().info()
         self.publisher.publish(message)  
         self.is_turning = True
