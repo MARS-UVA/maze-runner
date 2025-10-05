@@ -14,7 +14,6 @@ class SuperAwesomeAndRealNode(Node):
 
     def __init__(self):
         super().__init__('testnode')
-
         self.publisher = self.create_publisher(
                 msg_type=MotorCurrents,
                 topic='motor_currents',
@@ -27,7 +26,8 @@ class SuperAwesomeAndRealNode(Node):
             qos_profile = 1,
             callback = self.send_velocity
         )
-
+        self.turn_timer = None
+        self.is_turning = False
 
         self.get_logger().info("gorb")
 
@@ -35,37 +35,14 @@ class SuperAwesomeAndRealNode(Node):
         message = MotorCurrents()
         #0 - 255, 127 = 0, 127 > forward, < 127 backwards
         
-        front_df = feedback.front_sensor
-        left_df = feedback.left_sensor
-        right_df = feedback.right_sensor
-
-
+        distance_feedback = feedback.us_sensor
 
         # add code later when there are more sensors 
 
      
 
-        if front_df < 15:
-
-            r_velo = 150
-            l_velo = 100
-            message.left_wheels = l_velo
-            message.right_wheels = r_velo
-            self.publisher.publish(message)
-
-
-            self.get_logger().info("I'm boutta turn it!")
-            #self.turn_left(message)
-            self.get_logger().info("I'm done turning it!")
-        else: 
-            r_velo = 127
-            l_velo = 127
-            message.left_wheels = l_velo
-            message.right_wheels = r_velo
-            self.publisher.publish(message) 
-            self.get_logger().info("I'm stopped")
-            #self.get_logger().info(message.left_wheels)
-            #self.get_logger().info(message.right_wheels)
+        if distance_feedback < 20 and not self.is_turning:
+            self.turn_left(message)
 
            # r_velo = 127
            # l_velo = 127
@@ -74,26 +51,29 @@ class SuperAwesomeAndRealNode(Node):
       
 
     def turn_left(self, message):   
-        start_time = time.time()
-        while time.time() - start_time < 3000:
-            r_velo = 150
-            l_velo = 100
-            message.left_wheels = l_velo
-            message.right_wheels = r_velo
-            self.publisher.publish(message)
+        r_velo = 150
+        l_velo = 100
+        message.left_wheels = l_velo
+        message.right_wheels = r_velo
         
+        self.get_logger().info("I'm turning lefting it!")
+        self.get_logger().info(message)
+        #self.get_logger().info()
+        self.publisher.publish(message)  
+        self.is_turning = True
+        self.turn_timer = self.create_timer(3, self.stop)
+        
+
+    def stop(self):
+        message = MotorCurrents()
         r_velo = 127
         l_velo = 127
         message.left_wheels = l_velo
         message.right_wheels = r_velo
-        self.get_logger().info("I'm turning lefting it!")
-        #self.get_logger().info(message)
-        #self.get_logger().info()
         self.publisher.publish(message)  
-
-        return r_velo, l_velo
-
-
+        self.turn_timer.cancel()
+        self.is_turning = False
+        self.turn_timer = None
 
 
 
