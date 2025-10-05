@@ -38,10 +38,10 @@ class SerialHandler:
 
 	def readMsg(self, logger=None):
 		logger.info(f'Serial bytes in waiting: {self.SER.in_waiting}')
-		if(self.SER.in_waiting<2): return []
-		elif(self.SER.in_waiting>2): self.SER.read((self.SER.in_waiting//2)*2)
+		if(self.SER.in_waiting<4): return []
+		elif(self.SER.in_waiting>4): self.SER.read((self.SER.in_waiting-4))
 		header = self.SER.read(1)
-		feedback = list(struct.iter_unpack("B",self.SER.read(1))) # tuple of: ir_sensor
+		feedback = list(struct.iter_unpack("B",self.SER.read(1))) # tuple of: us_sensor
 		feedback = [i[0] for i in feedback]
 		return feedback
 
