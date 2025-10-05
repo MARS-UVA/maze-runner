@@ -41,7 +41,7 @@ class SerialHandler:
 		if(self.SER.in_waiting<4): return []
 		elif(self.SER.in_waiting>4): self.SER.read((self.SER.in_waiting-4))
 		header = self.SER.read(1)
-		feedback = list(struct.iter_unpack("B",self.SER.read(1))) # tuple of: us_sensor
+		feedback = list(struct.iter_unpack("B",self.SER.read(3))) # tuple of: us_sensor
 		feedback = [i[0] for i in feedback]
 		return feedback
 
