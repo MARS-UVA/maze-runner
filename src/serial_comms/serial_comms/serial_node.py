@@ -9,7 +9,7 @@ from serial_msgs.msg import Feedback
 
 MOTOR_CURRENT_MSG = 0
 SEND_DELAY_SEC = 0.02
-RECV_DELAY_SEC = 0.03
+RECV_DELAY_SEC = 0.02
 MOTOR_STILL = 127
 
 class SerialNode(Node):
@@ -22,10 +22,11 @@ class SerialNode(Node):
             topic='motor_currents',
             callback=self.listener_callback,
             qos_profile=QoSProfile(history=QoSHistoryPolicy.KEEP_LAST, depth= 1, reliability=QoSReliabilityPolicy.RELIABLE)) #1 queued message
+
         self.feedback_publisher = self.create_publisher(
-            msg_type=Feedback,
-            topic='feedback',
-            qos_profile=1
+             msg_type=Feedback,
+             topic='feedback',
+             qos_profile=1
         )
         self.send_timer = self.create_timer(SEND_DELAY_SEC, self.sendCurrents)
         self.recv_timer = self.create_timer(RECV_DELAY_SEC, self.readFromNucleo)
@@ -45,10 +46,11 @@ class SerialNode(Node):
     def readFromNucleo(self):
         data = self.serial_handler.readMsg(logger=self.get_logger())
         if data:
-            mf = Feedback(us_sensor = data[0])
-            self.get_logger().warn(f"Ultrasonic data: {data[0]}")
-            # self.feedback_publisher.publish(mf)
+            sensor_values = Feedback(front_sensor = data[0], right_sensor = data[1], left_sensor = data[2])
+            self.get_logger().warn(f"Ultrasonic data: Front: {data[0]}, Right: {data[1]}, Left: {data[2]}")
+            self.feedback_publisher.publish(sensor_values)
         else:
+            #self.feedback_publisher.publish(Feedback(us_sensor = 255)) # send 255 if no data
             self.get_logger().warn("no data")
 
 def main(args=None):
