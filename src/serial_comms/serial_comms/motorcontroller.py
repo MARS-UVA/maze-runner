@@ -41,27 +41,27 @@ class MotorControllerNode(Node):
             self.turn(message, "left", 3.35)
         self.publisher.publish(message)
 
-def turn(self, message, dir, time):   
-    if dir == "right":
-        message.left_wheels = FORWARD_VAL
-        message.right_wheels = BACKWARD_VAL
-    else: # assume left
-        message.left_wheels = BACKWARD_VAL
-        message.right_wheels = FORWARD_VAL
-    self.get_logger().info()
-    self.publisher.publish(message)  
-    self.is_turning = True
-    self.turn_timer = self.create_timer(time, self.stop)
-        
+    def turn(self, message, dir, time):   
+        if dir == "right":
+            message.left_wheels = FORWARD_VAL
+            message.right_wheels = BACKWARD_VAL
+        else: # assume left
+            message.left_wheels = BACKWARD_VAL
+            message.right_wheels = FORWARD_VAL
+        self.get_logger().info()
+        self.publisher.publish(message)  
+        self.is_turning = True
+        self.turn_timer = self.create_timer(time, self.stop)
+            
 
-def stop(self):
-    message = MotorCurrents()
-    message.left_wheels = STOP_VAL
-    message.right_wheels = STOP_VAL
-    self.publisher.publish(message)
-    self.turn_timer.cancel()
-    self.is_turning = False
-    self.turn_timer = None
+    def stop(self):
+        message = MotorCurrents()
+        message.left_wheels = STOP_VAL
+        message.right_wheels = STOP_VAL
+        self.publisher.publish(message)
+        self.turn_timer.cancel()
+        self.is_turning = False
+        self.turn_timer = None
 
 def main(args=None):
     rclpy.init(args=args)
