@@ -7,6 +7,9 @@ from serial_msgs.msg import MotorCurrents, Feedback
 STOP_VAL = 127
 FORWARD_VAL = STOP_VAL + 23
 BACKWARD_VAL = STOP_VAL - 27
+LEFT_DIST = 30
+RIGHT_DIST = 30
+FRONT_DIST = 15
 
 class MotorControllerNode(Node):
     def __init__(self):
@@ -28,12 +31,12 @@ class MotorControllerNode(Node):
 
     def send_velocity(self, feedback):
         message = MotorCurrents()
-        if feedback.left_sensor > 15 and not self.is_turning: # left opening, turn left
+        if feedback.left_sensor > LEFT_DIST and not self.is_turning: # left opening, turn left
             self.turn(message, "left", 3.35)
-        elif feedback.front_sensor > 15 and not self.is_turning: # go forward
+        elif feedback.front_sensor > FRONT_DIST and not self.is_turning: # go forward
             message.left_wheels = FORWARD_VAL
             message.right_wheels = FORWARD_VAL
-        elif feedback.right_sensor > 15 and not self.is_turning: # right opening, turn right
+        elif feedback.right_sensor > RIGHT_DIST and not self.is_turning: # right opening, turn right
             self.turn(message, "right", 3.35)
         elif not self.is_turning: # turn around
             self.turn(message, "left", 3.35)
