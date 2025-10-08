@@ -48,7 +48,7 @@ class MotorControllerNode(Node):
         else: # assume left
             message.left_wheels = BACKWARD_VAL
             message.right_wheels = FORWARD_VAL
-        self.get_logger().info()
+        self.get_logger().info("Turning")
         self.publisher.publish(message)  
         self.is_turning = True
         self.turn_timer = self.create_timer(time, self.stop)
