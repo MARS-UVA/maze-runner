@@ -3,7 +3,6 @@
 import rclpy #type: ignore
 from rclpy.node import Node #type: ignore
 from serial_msgs.msg import MotorCurrents, Feedback
-import time
 
 STOP_VAL = 127
 FORWARD_VAL = STOP_VAL + 23
@@ -29,14 +28,14 @@ class MotorControllerNode(Node):
 
     def send_velocity(self, feedback):
         message = MotorCurrents()
-        if feedback.left_sensor > 15: # left opening, turn left
+        if feedback.left_sensor > 15 and not self.is_turning: # left opening, turn left
             self.turn(message, "left", 3.35)
-        elif feedback.front_sensor > 15: # go forward
+        elif feedback.front_sensor > 15 and not self.is_turning: # go forward
             message.left_wheels = FORWARD_VAL
             message.right_wheels = FORWARD_VAL
-        elif feedback.right_sensor > 15: # right opening, turn right
+        elif feedback.right_sensor > 15 and not self.is_turning: # right opening, turn right
             self.turn(message, "right", 3.35)
-        else: # turn around
+        elif not self.is_turning: # turn around
             self.turn(message, "left", 3.35)
             self.turn(message, "left", 3.35)
         self.publisher.publish(message)
@@ -51,7 +50,10 @@ class MotorControllerNode(Node):
         self.get_logger().info("Turning")
         self.publisher.publish(message)  
         self.is_turning = True
-        self.turn_timer = self.create_timer(time, self.stop)
+        if (self.turn_timer.is_canceled):
+            self.turn_timer.reset()
+        else:
+            self.turn_timer = self.create_timer(time, self.stop)
             
 
     def stop(self):
@@ -61,7 +63,6 @@ class MotorControllerNode(Node):
         self.publisher.publish(message)
         self.turn_timer.cancel()
         self.is_turning = False
-        self.turn_timer = None
 
 def main(args=None):
     rclpy.init(args=args)
