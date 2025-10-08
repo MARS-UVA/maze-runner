@@ -23,7 +23,7 @@ class MotorControllerNode(Node):
             callback=self.send_velocity,
             qos_profile=10
         )
-        self.turn_timer = None
+        self.turn_timer = self.create_timer(3.35, self.stop)
         self.is_turning = False
 
     def send_velocity(self, feedback):
