@@ -38,6 +38,8 @@ class MotorControllerNode(Node):
         elif not self.is_turning: # turn around
             self.turn(message, "left", 3.35)
             self.turn(message, "left", 3.35)
+        else:
+            return
         self.publisher.publish(message)
 
     def turn(self, message, dir, time):   
