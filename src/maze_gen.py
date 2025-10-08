@@ -9,6 +9,7 @@ from pygame.locals import *
 from sympy import ceiling
 from sympy.codegen.fnodes import merge
 
+
 class TreeNode:
     def __init__(self, data, parent=None, children=None):
         self.data = data
@@ -16,11 +17,14 @@ class TreeNode:
         self.children = []
         if children:
             self.children = children
+
     def add_child(self, child):
         self.children.append(child)
 
+
 def move(pos, dx=0, dy=0):
     return pos[0] + dx, pos[1] + dy
+
 
 def get_common_node(node_fam_1, node_fam_2):
     for node_1 in node_fam_1:
@@ -36,7 +40,8 @@ class Tile:
         self.bot = bot
         self.right = right
         self.role = role
-    
+
+
 class Maze:
     def __init__(self, row, col, start, end, num_sols):
         self.row = row
@@ -52,7 +57,7 @@ class Maze:
             temp_row = []
             for j in range(self.col):
                 temp_row.append(Tile(True, True, True, True, "normal"))
-                coord_list.append((j,i))
+                coord_list.append((j, i))
             self.maze.append(temp_row)
 
         # initialize default starting pos for default config
@@ -70,7 +75,6 @@ class Maze:
         is_sol = False
 
         print("Generating maze...")
-
 
         # loop until maze is complete
         complete = False
@@ -90,7 +94,6 @@ class Maze:
             curr_loop = []
             maze_history = []
             while not new_tile in visited_tiles:
-
 
                 if new_tile in curr_loop:
 
@@ -114,48 +117,43 @@ class Maze:
                     else:
                         possible_moves = ["right", "down", "left", "up"]
 
-
-
                 curr_loop.append(new_tile)
                 maze_history.append(copy.deepcopy(self.maze))
 
                 # check for walls
                 if new_tile[0] == 0:
                     possible_moves.remove("left")
-                elif new_tile[0] == self.col-1:
+                elif new_tile[0] == self.col - 1:
                     possible_moves.remove("right")
                 if new_tile[1] == 0:
                     possible_moves.remove("up")
-                elif new_tile[1] == self.row-1:
+                elif new_tile[1] == self.row - 1:
                     possible_moves.remove("down")
 
-                move_dir = possible_moves[random.randint(0,len(possible_moves)-1)]
+                move_dir = possible_moves[random.randint(0, len(possible_moves) - 1)]
 
                 if move_dir == "right":
                     self.maze[new_tile[1]][new_tile[0]].right = False
-                    new_tile = move(new_tile,dx=1)
+                    new_tile = move(new_tile, dx=1)
                     self.maze[new_tile[1]][new_tile[0]].left = False
                     possible_moves = ["right", "down", "up"]
                 elif move_dir == "down":
                     self.maze[new_tile[1]][new_tile[0]].bot = False
-                    new_tile = move(new_tile,dy=1)
+                    new_tile = move(new_tile, dy=1)
                     self.maze[new_tile[1]][new_tile[0]].top = False
                     possible_moves = ["right", "down", "left"]
                 elif move_dir == "left":
                     self.maze[new_tile[1]][new_tile[0]].left = False
-                    new_tile = move(new_tile,dx=-1)
+                    new_tile = move(new_tile, dx=-1)
                     self.maze[new_tile[1]][new_tile[0]].right = False
                     possible_moves = ["down", "left", "up"]
                 else:
                     self.maze[new_tile[1]][new_tile[0]].top = False
-                    new_tile = move(new_tile,dy=-1)
+                    new_tile = move(new_tile, dy=-1)
                     self.maze[new_tile[1]][new_tile[0]].bot = False
                     possible_moves = ["right", "left", "up"]
 
-
-
             if not is_sol:
-
                 solution_path += curr_loop
                 solution_path.append(self.end)
 
@@ -165,24 +163,19 @@ class Maze:
             for coord in curr_loop:
                 coord_list.remove(coord)
 
-
-
             curr_loop.append(new_tile)
             # checks if this is the solution loop to skip adding to branches
             if len(visited_tiles) != len(curr_loop):
                 branches.append(curr_loop)
 
-
-
             if len(visited_tiles) == self.row * self.col:
                 complete = True
-
 
         merge_found = True
         while merge_found:
             merge_found = False
             for i, branch in enumerate(branches):
-                for j in range(i+1, len(branches)):
+                for j in range(i + 1, len(branches)):
                     if branch[0] == branches[j][-1]:
                         # merge first branch to end of second branch, remove first branch
                         branch.pop(0)
@@ -216,19 +209,18 @@ class Maze:
                 branches.remove(branch)
             layer_num += 1
 
-
         edges = []
         for j, row in enumerate(self.maze):
             for i, tile in enumerate(row):
-                if tile.right and i != self.col-1:
-                    tile_1 = (i,j)
-                    tile_2 = (i+1,j)
-                    edges.append((tile_1,tile_2))
+                if tile.right and i != self.col - 1:
+                    tile_1 = (i, j)
+                    tile_2 = (i + 1, j)
+                    edges.append((tile_1, tile_2))
 
-                if tile.bot and j != self.row-1:
-                    tile_1 = (i,j)
-                    tile_2 = (i,j+1)
-                    edges.append((tile_1,tile_2))
+                if tile.bot and j != self.row - 1:
+                    tile_1 = (i, j)
+                    tile_2 = (i, j + 1)
+                    edges.append((tile_1, tile_2))
 
         remove_candidates = []
 
@@ -247,7 +239,6 @@ class Maze:
                 if tile_1_node and tile_2_node:
                     break
 
-
             tile_1_node_fam = [copy.copy(tile_1_node)]
             while tile_1_node.parent:
                 tile_1_node = tile_1_node.parent
@@ -256,9 +247,6 @@ class Maze:
             while tile_2_node.parent:
                 tile_2_node = tile_2_node.parent
                 tile_2_node_fam.append(copy.copy(tile_2_node))
-
-
-
 
             common_node = get_common_node(tile_1_node_fam, tile_2_node_fam)
 
@@ -290,17 +278,16 @@ class Maze:
                         distance_2 += len(node.data) - node.data.index(travel_tile) - 1
                         travel_tile = node.data[-1]
 
-            distance = abs(common_node_index_1-common_node_index_2) + distance_1 + distance_2
-            if distance > (self.row + self.col)/2:
+            distance = abs(common_node_index_1 - common_node_index_2) + distance_1 + distance_2
+            if distance > (self.row + self.col) / 2:
                 remove_candidates.append((tile_1, tile_2))
-
 
         remove_candidates.sort()
 
         if num_sols > len(remove_candidates):
             num_sols = len(remove_candidates)
         for i in range(num_sols):
-            rand_index = ceiling(random.randrange(0, (len(remove_candidates)-1) ** 2) ** 0.5)
+            rand_index = ceiling(random.randrange(0, (len(remove_candidates) - 1) ** 2) ** 0.5)
             edge = remove_candidates[rand_index]
             remove_candidates.remove(edge)
 
@@ -316,8 +303,6 @@ class Maze:
                 self.maze[tile_1_y][tile_1_x].bot = False
                 self.maze[tile_2_y][tile_2_x].top = False
         print("Maze complete!")
-
-
 
     def disp_maze(self, sol=None, path=None):
 
@@ -346,136 +331,137 @@ class Maze:
 
             startx = 100
             starty = 100
-            side_length = 400/self.row
+            side_length = 400 / self.row
 
             y = starty
             for j, row in enumerate(self.maze):
                 x = startx
                 for i, tile in enumerate(row):
                     if tile.top:
-                        pygame.draw.line(window, white, [x,y], [x+side_length,y], 2)
-                    if tile.left and not (i==0 and j==0):
-                        pygame.draw.line(window, white, [x,y], [x,y+side_length], 2)
+                        pygame.draw.line(window, white, [x, y], [x + side_length, y], 2)
+                    if tile.left and not (i == 0 and j == 0):
+                        pygame.draw.line(window, white, [x, y], [x, y + side_length], 2)
                     if tile.bot:
-                        pygame.draw.line(window, white, [x+side_length,y+side_length], [x,y+side_length], 2)
-                    if tile.right and not (i==self.row-1 and j==self.col-1):
-                        pygame.draw.line(window, white, [x+side_length,y+side_length], [x+side_length,y], 2)
+                        pygame.draw.line(window, white, [x + side_length, y + side_length], [x, y + side_length], 2)
+                    if tile.right and not (i == self.row - 1 and j == self.col - 1):
+                        pygame.draw.line(window, white, [x + side_length, y + side_length], [x + side_length, y], 2)
                     x += side_length
                 y += side_length
 
             sol_path = copy.copy(sol)
             lines_path = []
             if sol_path:
-                if len(sol_path) != len(sol)+2:
-                    sol_path.insert(0,(-1,0))
-                    sol_path.append((sol[-1][0]+1,sol[-1][1]))
+                if len(sol_path) != len(sol) + 2:
+                    sol_path.insert(0, (-1, 0))
+                    sol_path.append((sol[-1][0] + 1, sol[-1][1]))
                 for tile in sol_path:
-                    lines_path.append((100+tile[0]*side_length+side_length/2,100+tile[1]*side_length+side_length/2))
+                    lines_path.append(
+                        (100 + tile[0] * side_length + side_length / 2, 100 + tile[1] * side_length + side_length / 2))
             if path:
                 for tile in path:
-                    lines_path.append((100+tile[1]*side_length+side_length/2,100+tile[0]*side_length+side_length/2))
+                    lines_path.append(
+                        (100 + tile[1] * side_length + side_length / 2, 100 + tile[0] * side_length + side_length / 2))
 
             if lines_path:
-                pygame.draw.lines(window, (255,0,0), False, lines_path, 4)
-
+                pygame.draw.lines(window, (255, 0, 0), False, lines_path, 4)
 
             # Draws the surface object to the screen.
             pygame.display.update()
 
     def hug_left(self, maze):
-        #Coordinates for the exit sequence
-        end=maze.end
+        # Coordinates for the exit sequence
+        end = maze.end
 
-        #list map pairing
-        path_list=list()
+        # list map pairing
+        path_list = list()
         path_list.append(maze.start)
-        path_map=map(tuple,path_list)
+        path_map = map(tuple, path_list)
 
-        #current row, column pair
-        cur_row, cur_col=maze.start
-        next_row=0
-        next_col=0
+        # current row, column pair
+        cur_row, cur_col = maze.start
+        next_row = 0
+        next_col = 0
 
-        #starting tile
-        cur_Tile=maze.maze[cur_row][cur_col]
+        # starting tile
+        cur_Tile = maze.maze[cur_row][cur_col]
 
-        #intializing random next tile
-        next_Tile=Tile(True,True,True,True,True)
+        # intializing random next tile
+        next_Tile = Tile(True, True, True, True, True)
 
-        #intializing left right up and down
-        left=cur_Tile.left
-        right=cur_Tile.right
-        top=cur_Tile.top
-        bottom=cur_Tile.bot
+        # intializing left right up and down
+        left = cur_Tile.left
+        right = cur_Tile.right
+        top = cur_Tile.top
+        bottom = cur_Tile.bot
 
-        #can update this to give initial orientation
-        orientation=0
+        # can update this to give initial orientation
+        orientation = 0
 
-        while (cur_row,cur_col)!=end:
-            print(cur_row,cur_col)
+        while (cur_row, cur_col) != end:
+            print(cur_row, cur_col)
             print(not left, not top, not right, not bottom)
             print(cur_Tile)
             if not left:
-                #go left
-                #run into an issue when directios begin to change
-                next_row,next_col=maze.move_direction("Left", orientation, cur_row, cur_col)
-                orientation+=90
+                # go left
+                # run into an issue when directios begin to change
+                next_row, next_col = maze.move_direction("Left", orientation, cur_row, cur_col)
+                orientation += 90
             elif not top:
-                #go straight
-                next_row, next_col=maze.move_direction("Up", orientation, cur_row, cur_col)
+                # go straight
+                next_row, next_col = maze.move_direction("Up", orientation, cur_row, cur_col)
             elif not right:
-                #go right
-                next_row, next_col=maze.move_direction("Right", orientation, cur_row, cur_col)
-                orientation+=270
+                # go right
+                next_row, next_col = maze.move_direction("Right", orientation, cur_row, cur_col)
+                orientation += 270
             elif not bottom:
-                next_row, next_col=maze.move_direction("Down", orientation, cur_row, cur_col)
-                orientation+=180
-                #turn around
+                next_row, next_col = maze.move_direction("Down", orientation, cur_row, cur_col)
+                orientation += 180
+                # turn around
             else:
                 print("not working")
                 break
-            #Set next_tile to new row,col pair
+            # Set next_tile to new row,col pair
             next_Tile = maze.maze[next_row][next_col]
 
-            #update the direction the robot is facing
-            left,top,right,bottom = maze.update_direction(orientation,next_Tile)
+            # update the direction the robot is facing
+            left, top, right, bottom = maze.update_direction(orientation, next_Tile)
 
-            if (next_row,next_col) in path_map:
-                #if we are back tracking remove the paths that weve already stepped on
-                path_list.remove((cur_row,cur_col))
-                path_list.remove((next_row,next_col))
+            if (next_row, next_col) in path_map:
+                # if we are back tracking remove the paths that weve already stepped on
+                path_list.remove((cur_row, cur_col))
+                path_list.remove((next_row, next_col))
 
-            #add new tile to list and map and then move from cur to next
-            path_list.append((next_row,next_col))
+            # add new tile to list and map and then move from cur to next
+            path_list.append((next_row, next_col))
             path_map = map(tuple, path_list)
 
             cur_row = next_row
             cur_col = next_col
-            cur_Tile=next_Tile
+            cur_Tile = next_Tile
 
         print(path_list)
         print("Maze Finished!")
         return path_list
 
-    def move_direction(self,direction, orientation, row, col):
-        orientation=orientation%360
+    def move_direction(self, direction, orientation, row, col):
+        orientation = orientation % 360
         print("orientation:", orientation)
         print("direction:", direction)
         match direction:
             case "Left":
                 match orientation:
                     case 0:
-                        #decrease column
-                        col-=1
+                        # decrease column
+                        col -= 1
                     case 90:
-                        #increase row
-                        row+=1
+                        # increase row
+                        row += 1
                     case 180:
-                        #increase col
-                        col+=1
+                        # increase col
+                        col += 1
                     case 270:
-                        #decrease row
-                        row-=1
+                        # decrease row
+                        row -= 1
             case "Right":
                 match orientation:
                     case 0:
@@ -519,40 +505,40 @@ class Maze:
                     case 270:
                         # decrease col
                         col -= 1
-        return row,col
+        return row, col
 
-    def update_direction(self,direction, next_Tile):
-        #mod by 360 to return back to 0-270
-        direction=direction%360
+    def update_direction(self, direction, next_Tile):
+        # mod by 360 to return back to 0-270
+        direction = direction % 360
 
-        #base case is facing up
+        # base case is facing up
         left = next_Tile.left
         top = next_Tile.top
         right = next_Tile.right
         bottom = next_Tile.bot
 
-        #switching the orientation of the robot
+        # switching the orientation of the robot
 
         match direction:
-            #facing left
+            # facing left
             case 90:
-                left=next_Tile.bot
-                top=next_Tile.left
-                right=next_Tile.top
-                bottom=next_Tile.right
-            #facing down
+                left = next_Tile.bot
+                top = next_Tile.left
+                right = next_Tile.top
+                bottom = next_Tile.right
+            # facing down
             case 180:
                 left = next_Tile.right
                 top = next_Tile.bot
                 right = next_Tile.left
                 bottom = next_Tile.top
-            #facing right
+            # facing right
             case 270:
                 left = next_Tile.top
                 top = next_Tile.right
                 right = next_Tile.bot
                 bottom = next_Tile.left
-        return left,top,right,bottom
+        return left, top, right, bottom
 
     def depth_first_search(self, maze):
         # Coordinates for the exit sequence
@@ -564,14 +550,14 @@ class Maze:
         path_map = map(tuple, path_list)
         wrong_path = list()
         wrong_map = map(tuple, wrong_path)
-        k_points=[]
+        k_points = []
 
         # current row, column pair
         cur_row, cur_col = maze.start
         next_row = 0
         next_col = 0
 
-        path_list.append((cur_row,cur_col))
+        path_list.append((cur_row, cur_col))
 
         # starting tile
         cur_Tile = maze.maze[cur_row][cur_col]
@@ -598,14 +584,14 @@ class Maze:
             '''
             if not top:
                 # go straight
-                #if there are other paths mark down k_point
+                # if there are other paths mark down k_point
                 if not left or not right:
                     k_points.append(((cur_row, cur_col), orientation))
 
                 next_row, next_col = maze.move_direction("Up", orientation, cur_row, cur_col)
             elif not left:
                 # go left
-                #if there are other paths mark down k_point
+                # if there are other paths mark down k_point
                 if not right:
                     k_points.append(((cur_row, cur_col), orientation))
                 # run into an issue when directios begin to change
@@ -619,24 +605,24 @@ class Maze:
                 if none of the options are available return to last key point
                 '''
             else:
-                #gets the most recent key point from the stack and then moves back through until it hits the point
+                # gets the most recent key point from the stack and then moves back through until it hits the point
 
-                k_point=k_points.pop()
+                k_point = k_points.pop()
 
-                next_tile=k_point[0]
-                orientation=k_point[1]%360
+                next_tile = k_point[0]
+                orientation = k_point[1] % 360
 
-                while path_list[-1]!=next_tile:
+                while path_list[-1] != next_tile:
                     path_list.remove(path_list[-1])
 
-                #Sets the path that the robot has gone down to false
-                next_Tile=maze.maze[next_row][next_col]
-                if next_Tile.top==True:
-                    next_Tile.top=False
-                elif next_Tile.left==True:
-                    next_Tile.left=False
-                elif next_Tile.right==True:
-                    next_Tile.right=False
+                # Sets the path that the robot has gone down to false
+                next_Tile = maze.maze[next_row][next_col]
+                if next_Tile.top == True:
+                    next_Tile.top = False
+                elif next_Tile.left == True:
+                    next_Tile.left = False
+                elif next_Tile.right == True:
+                    next_Tile.right = False
 
             # Set next_tile to new row,col pair
             next_Tile = maze.maze[next_row][next_col]
@@ -661,6 +647,6 @@ if __name__ == "__main__":
     my_maze = Maze(10, 10, "default", "default", 0)
 
     my_maze.disp_maze()
-    path_list=my_maze.depth_first_search(my_maze)
-    #my_maze.disp_maze(path=path_list)
+    path_list = my_maze.depth_first_search(my_maze)
+    # my_maze.disp_maze(path=path_list)
 
