@@ -11,8 +11,9 @@ import time
 class SuperAwesomeAndRealNode(Node):
 
 
-
     def __init__(self):
+        self.is_turning = False
+        self.turn_timer = None
         super().__init__('testnode')
         self.publisher = self.create_publisher(
                 msg_type=MotorCurrents,
@@ -32,6 +33,7 @@ class SuperAwesomeAndRealNode(Node):
         self.get_logger().info("gorb")
 
     def send_velocity(self, feedback):
+     
         message = MotorCurrents()
         #0 - 255, 127 = 0, 127 > forward, < 127 backwards
         
@@ -115,7 +117,7 @@ def main(args=None):
     node.destroy_node()
     rclpy.shutdown()
 
-
+        
 
 if __name__ == '__main__':
     main()
