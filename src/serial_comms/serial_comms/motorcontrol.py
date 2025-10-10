@@ -67,7 +67,7 @@ class SuperAwesomeAndRealNode(Node):
         else:
             self.turn_left(message, "right", 3.25)
 
-    def turn_left(self, message,dir, time):   
+    def turn_left(self, message, dir, time):   
         if dir == "left":
             r_velo = 150
             l_velo = 100
@@ -84,6 +84,7 @@ class SuperAwesomeAndRealNode(Node):
         self.turn_timer = self.create_timer(time, self.stop(dir))
     
     def stop(self, dir):
+        message = MotorCurrents()
         if dir == "left":
             r_velo = 150
             l_velo = 150
@@ -92,7 +93,6 @@ class SuperAwesomeAndRealNode(Node):
             self.publisher.publish(message)
             self.turn_timer.cancel()
             self.turn_timer = self.create_timer(2, self.stop("forward"))
-        message = MotorCurrents()
         r_velo = 127
         l_velo = 127
         message.left_wheels = l_velo
