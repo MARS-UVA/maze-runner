@@ -33,7 +33,7 @@ class SerialNode(Node):
         self.serial_handler = SerialHandler()
 
     def listener_callback(self, msg):
-        # self.get_logger().warn("Received motor query")
+        self.get_logger().warn("Received motor query")
         # motors = ["FL", "FR", "BL", "BR"]
         self.data[0] = msg.left_wheels
         self.data[1] = msg.right_wheels 
