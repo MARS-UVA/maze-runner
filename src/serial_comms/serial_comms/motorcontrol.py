@@ -25,7 +25,7 @@ class SuperAwesomeAndRealNode(Node):
             msg_type = Feedback,
             topic = 'feedback',
             qos_profile = 1,
-            callback = self.send_velocity
+            callback = self.wall_hugger
         )
         self.turn_timer = None
         self.is_turning = False
@@ -55,7 +55,7 @@ class SuperAwesomeAndRealNode(Node):
         distance_feedback = feedback.front_sensor
         left_feedback = feedback.left_sensor
         if left_feedback > 20:
-            self.turn(message, "left", 3.25)
+            self.turn(message, "left")
         elif distance_feedback > 20: 
             r_velo = 150
             l_velo = 150
@@ -63,9 +63,9 @@ class SuperAwesomeAndRealNode(Node):
             message.right_wheels = r_velo
             self.publisher.publish(message)  
         else:
-            self.turn(message, "right", 3.25)
+            self.turn(message, "right")
 
-    def turn(self, message, dir, duration):   
+    def turn(self, message, dir):   
         if dir == "left":
             r_velo = 150
             l_velo = 100
