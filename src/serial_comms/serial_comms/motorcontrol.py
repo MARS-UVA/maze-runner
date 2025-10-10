@@ -44,7 +44,7 @@ class SuperAwesomeAndRealNode(Node):
         # add code later when there are more sensors 
 
         if distance_feedback < 20 and not self.is_turning:
-            self.turn_left(message, "left", 3.75)
+            self.turn(message, "left", 3.75)
 
            # r_velo = 127
            # l_velo = 127
