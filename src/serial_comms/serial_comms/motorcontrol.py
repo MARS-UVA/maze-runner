@@ -54,10 +54,8 @@ class SuperAwesomeAndRealNode(Node):
         message = MotorCurrents()
         distance_feedback = feedback.front_sensor
         left_feedback = feedback.left_sensor
-        if self.is_turning:
-            pass
-        elif left_feedback > 20:
-            self.turn_left(message, "left", 3.25)
+        if left_feedback > 20:
+            self.turn(message, "left", 3.25)
         elif distance_feedback > 20: 
             r_velo = 150
             l_velo = 150
@@ -65,7 +63,7 @@ class SuperAwesomeAndRealNode(Node):
             message.right_wheels = r_velo
             self.publisher.publish(message)  
         else:
-            self.turn_left(message, "right", 3.25)
+            self.turn(message, "right", 3.25)
 
     def turn(self, message, dir, duration):   
         if dir == "left":
@@ -82,14 +80,14 @@ class SuperAwesomeAndRealNode(Node):
         self.publisher.publish(message)
         self.get_logger().info(f"Sent da message with {l_velo}, {r_velo}")
         self.is_turning = True
-        time.sleep(3)
+        time.sleep(10)
         r_velo = 150
         l_velo = 150
         message.left_wheels = l_velo
         message.right_wheels = r_velo
         self.publisher.publish(message)
         self.get_logger().info("Going Forwards!")
-        time.sleep(2)
+        time.sleep(5)
         #self.turn_timer = self.create_timer(duration, self.stop(dir))
     
     def stop(self, dir):
