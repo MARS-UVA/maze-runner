@@ -91,14 +91,14 @@ class SuperAwesomeAndRealNode(Node):
             message.left_wheels = l_velo
             message.right_wheels = r_velo
             self.publisher.publish(message)
-            self.destory_timer(self.turn_timer)
+            self.destroy_timer(self.turn_timer)
             self.turn_timer = self.create_timer(2, self.stop("forward"))
         r_velo = 127
         l_velo = 127
         message.left_wheels = l_velo
         message.right_wheels = r_velo
         self.publisher.publish(message)  
-        self.destory_timer(self.turn_timer)
+        self.destroy_timer(self.turn_timer)
         self.is_turning = False
         self.turn_timer = None
 
