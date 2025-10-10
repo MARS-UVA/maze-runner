@@ -79,7 +79,8 @@ class SuperAwesomeAndRealNode(Node):
         
         self.get_logger().info("I'm turning lefting it!")
         #self.get_logger().info()
-        self.publisher.publish(message)  
+        self.publisher.publish(message)
+        self.get_logger().info(f"Sent da message with {l_velo}, {r_velo}")
         self.is_turning = True
         self.turn_timer = self.create_timer(time, self.stop(dir))
     
