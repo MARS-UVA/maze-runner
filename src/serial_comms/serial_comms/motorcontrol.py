@@ -46,8 +46,7 @@ class SuperAwesomeAndRealNode(Node):
         if distance_feedback < 20 and not self.is_turning:
             self.turn(message, "left", 3.75)
 
-           # r_velo = 127
-           # l_velo = 127
+   
       
        
     def wall_hugger(self, feedback):
@@ -66,49 +65,35 @@ class SuperAwesomeAndRealNode(Node):
             self.turn(message, "right")
 
     def turn(self, message, dir):   
+        
+        # if a direction isn't specified, stop.
+
         if dir == "left":
-            r_velo = 150
-            l_velo = 100
+            r_velo = 170
+            l_velo = 80
+        elif dir == "right":
+            r_velo = 80
+            l_velo = 170
         else:
-            r_velo = 100
-            l_velo = 150
+            r_velo = 127
+            l_velo = 127
+
         message.left_wheels = l_velo
         message.right_wheels = r_velo
         
+        # I'm turning lefting it!
         self.get_logger().info("I'm turning lefting it!")
-        #self.get_logger().info()
         self.publisher.publish(message)
         self.get_logger().info(f"Sent da message with {l_velo}, {r_velo}")
         self.is_turning = True
-        time.sleep(10)
+        time.sleep(2.4)
         r_velo = 150
         l_velo = 150
         message.left_wheels = l_velo
         message.right_wheels = r_velo
         self.publisher.publish(message)
         self.get_logger().info("Going Forwards!")
-        time.sleep(5)
-        #self.turn_timer = self.create_timer(duration, self.stop(dir))
-    
-    def stop(self, dir):
-        message = MotorCurrents()
-        if dir == "left":
-            r_velo = 150
-            l_velo = 150
-            message.left_wheels = l_velo
-            message.right_wheels = r_velo
-            self.publisher.publish(message)
-            self.destroy_timer(self.turn_timer)
-            self.turn_timer = self.create_timer(2, self.stop("forward"))
-        r_velo = 127
-        l_velo = 127
-        message.left_wheels = l_velo
-        message.right_wheels = r_velo
-        self.publisher.publish(message)  
-        self.destroy_timer(self.turn_timer)
-        self.is_turning = False
-        self.turn_timer = None
-
+        time.sleep(2)
 
 
 def main(args=None):
