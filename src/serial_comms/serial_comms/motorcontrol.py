@@ -67,7 +67,7 @@ class SuperAwesomeAndRealNode(Node):
     def turn(self, message, dir):   
         
         # if a direction isn't specified, stop.
-
+        time.sleep(0.5)
         if dir == "left":
             r_velo = 170
             l_velo = 80
@@ -93,7 +93,7 @@ class SuperAwesomeAndRealNode(Node):
         message.right_wheels = r_velo
         self.publisher.publish(message)
         self.get_logger().info("Going Forwards!")
-        time.sleep(2)
+        time.sleep(1)
 
 
 def main(args=None):
