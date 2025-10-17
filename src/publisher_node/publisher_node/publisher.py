@@ -31,18 +31,19 @@ class SampleNode(Node):
         message.left_wheels = l_velo
         self.publisher.publish(message)
         # stop listening to sensors for duration of the turn (2sec)
-        time.sleep(2)
+        time.sleep(2/3)
         
 
-    def turn_right(self):
-
+    def turn_right(self, message):
         # turn velocities
         r_velo, l_velo = 70, 230
         self.get_logger().info(f"jsadhfjhsdjafhjdahsfjhdjkfhdjshafjdkshfjkashdkfjhdsjkakf: glob")
+        # publish
+        message.right_wheels = r_velo
+        message.left_wheels = l_velo
+        self.publisher.publish(message)
         # stop listening to sensors for duration of the turn (2sec)
-        time.sleep(2)
-        # move straight velocites
-        r_velo, l_velo = 160, 160
+        time.sleep(2/3)
     
 
     def send_velocity(self, feedback):
