@@ -52,9 +52,19 @@ class SampleNode(Node):
         r_velo = 160
         l_velo = 160
 
-        # turns left if there is a wall 30cm ahead
-        if feedback.front_sensor < 30:
+        if not(feedback.left_sensor < 30):
+            self.turn_left(message)
+        elif not(feedback.front_sensor <30):
+            r_velo = 160
+            l_velo = 160
+        elif not(feedback.right_sensor <30):
             self.turn_right(message)
+        else:
+            self.turn_right(message)
+
+        if (feedback.left_sensor < 30) and (feedback.front_sensor <30) and (feedback.right_sensor <30):
+            r_velo = 127
+            l_velo = 127
 
 
         message.right_wheels = r_velo
