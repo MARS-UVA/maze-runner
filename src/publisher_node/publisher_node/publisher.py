@@ -48,23 +48,20 @@ class SampleNode(Node):
 
     def send_velocity(self, feedback):
         message = MotorCurrents()
-        #initial velocities
-        r_velo = 160
-        l_velo = 160
 
-        if not(feedback.left_sensor < 30):
+        if feedback.left_sensor > 30:
             self.turn_left(message)
-        elif not(feedback.front_sensor <30):
+        elif feedback.front_sensor >30:
             r_velo = 160
             l_velo = 160
-        elif not(feedback.right_sensor <30):
+        elif feedback.right_sensor >30:
             self.turn_right(message)
+        elif feedback.left_sensor > 30 and feedback.front_sensor >30 and feedback.right_sensor >30:
+            r_velo = 127
+            l_velo = 127
         else:
             self.turn_right(message)
 
-        if not(feedback.left_sensor < 30) and not(feedback.front_sensor <30) and not(feedback.right_sensor <30):
-            r_velo = 127
-            l_velo = 127
 
 
         message.right_wheels = r_velo
