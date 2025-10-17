@@ -62,7 +62,7 @@ class SampleNode(Node):
         else:
             self.turn_right(message)
 
-        if (feedback.left_sensor < 30) and (feedback.front_sensor <30) and (feedback.right_sensor <30):
+        if not(feedback.left_sensor < 30) and not(feedback.front_sensor <30) and not(feedback.right_sensor <30):
             r_velo = 127
             l_velo = 127
 
