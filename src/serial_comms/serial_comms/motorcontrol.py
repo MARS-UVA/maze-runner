@@ -86,7 +86,7 @@ class SuperAwesomeAndRealNode(Node):
         self.publisher.publish(message)
         self.get_logger().info(f"Sent da message with {l_velo}, {r_velo}")
         self.is_turning = True
-        time.sleep(2.4)
+        time.sleep(1.5)
         r_velo = 150
         l_velo = 150
         message.left_wheels = l_velo
