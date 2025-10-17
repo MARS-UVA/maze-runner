@@ -22,7 +22,7 @@ class SampleNode(Node):
             callback=self.send_velocity)
         
 
-    def turn_left(self, feedback):
+    def turn_left(self):
 
         # turn velocities
         r_velo, l_velo = 230, 70
@@ -34,7 +34,7 @@ class SampleNode(Node):
         return r_velo, l_velo
         
 
-    def turn_right(self, feedback):
+    def turn_right(self):
 
         # turn velocities
         r_velo, l_velo = 70, 230
