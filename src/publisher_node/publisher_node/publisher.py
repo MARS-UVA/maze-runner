@@ -22,7 +22,7 @@ class SampleNode(Node):
             callback=self.send_velocity)
         
 
-    def turn_left(self):
+    def turn_left(self, feedback):
 
         # turn velocities
         r_velo, l_velo = 230, 70
@@ -54,7 +54,7 @@ class SampleNode(Node):
 
         # turns left if there is a wall 30cm ahead
         if feedback.front_sensor < 30:
-            self.turn_left()
+            self.turn_left(feedback)
 
 
         message.right_wheels = r_velo
