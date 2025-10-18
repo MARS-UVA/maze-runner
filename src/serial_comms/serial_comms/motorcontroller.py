@@ -10,6 +10,9 @@ BACKWARD_VAL = STOP_VAL - 27
 LEFT_DIST = 30
 RIGHT_DIST = 30
 FRONT_DIST = 15
+TURN_TIME = 3.35
+FORWARD_TIME = 0.65
+S_TO_NS = 1000000000
 
 class MotorControllerNode(Node):
     def __init__(self):
@@ -32,26 +35,34 @@ class MotorControllerNode(Node):
     def send_velocity(self, feedback):
         message = MotorCurrents()
         if feedback.left_sensor > LEFT_DIST and not self.is_turning: # left opening, turn left
-            self.turn(message, "left", 3.35)
+            self.turn(message, "left", TURN_TIME + FORWARD_TIME) # time to turn and move forward a bit
         elif feedback.front_sensor > FRONT_DIST and not self.is_turning: # go forward
             message.left_wheels = FORWARD_VAL
             message.right_wheels = FORWARD_VAL
         elif feedback.right_sensor > RIGHT_DIST and not self.is_turning: # right opening, turn right
-            self.turn(message, "right", 3.35)
+            self.turn(message, "right", TURN_TIME + FORWARD_TIME) # time to turn and move forward a bit
         elif not self.is_turning: # turn around
-            self.turn(message, "left", 3.35)
-            self.turn(message, "left", 3.35)
+            self.turn(message, "left", TURN_TIME) # no forward time, so should only perform turn
+            self.turn(message, "left", TURN_TIME) # no forward time, so should only perform turn
         else:
             return
         self.publisher.publish(message)
 
     def turn(self, message, dir, time):   
         if dir == "right":
-            message.left_wheels = FORWARD_VAL
-            message.right_wheels = BACKWARD_VAL
+            if self.turn_timer.time_since_last_call() <= TURN_TIME * S_TO_NS: # still in turn
+                message.left_wheels = FORWARD_VAL
+                message.right_wheels = BACKWARD_VAL
+            else: # go forward a bit after turn
+                message.left_wheels = FORWARD_VAL
+                message.right_wheels = FORWARD_VAL
         else: # assume left
-            message.left_wheels = BACKWARD_VAL
-            message.right_wheels = FORWARD_VAL
+            if self.turn_timer.time_since_last_call() <= TURN_TIME * S_TO_NS: # still in turn
+                message.left_wheels = BACKWARD_VAL
+                message.right_wheels = FORWARD_VAL
+            else: # go forward a bit after turn
+                message.left_wheels = FORWARD_VAL
+                message.right_wheels = FORWARD_VAL
         self.get_logger().info("Turning")
         self.publisher.publish(message)  
         self.is_turning = True
