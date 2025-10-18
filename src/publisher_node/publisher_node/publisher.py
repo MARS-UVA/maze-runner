@@ -48,6 +48,8 @@ class SampleNode(Node):
 
     def send_velocity(self, feedback):
         message = MotorCurrents()
+        r_velo = 160
+        l_velo = 160
 
         if feedback.left_sensor > 30:
             self.turn_left(message)
