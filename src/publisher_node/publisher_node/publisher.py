@@ -59,7 +59,7 @@ class SampleNode(Node):
         message.left_wheels = l_velo
         self.publisher.publish(message)
         # stop listening to sensors for duration of the turn (2sec)
-        time.sleep(4/3)
+        time.sleep(1)
 
     def send_velocity(self, feedback):
         message = MotorCurrents()
