@@ -74,8 +74,8 @@ class SuperAwesomeAndRealNode(Node):
             r_velo = 230
             l_velo = 70
         elif dir == "right":
-            r_velo = 70
-            l_velo = 230
+            r_velo = 90
+            l_velo = 250
         # if a direction isn't specified, stop.    
         else:
             r_velo = 127
@@ -89,7 +89,7 @@ class SuperAwesomeAndRealNode(Node):
         self.publisher.publish(message)
         self.get_logger().info(f"Sent da message with {l_velo}, {r_velo}")
         self.is_turning = True
-        time.sleep(0.67)
+        time.sleep(1)
         if dir == "left":
             r_velo = 150
             l_velo = 150
