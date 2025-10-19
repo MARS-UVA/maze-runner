@@ -14,23 +14,29 @@ Carlos Giron
 #include <stdint.h>
 
 #define FR_EN 		3
-#define FR_FORWARD  4
-#define FR_BACKWARD 5
+#define FR_FORWARD  2
+#define FR_BACKWARD 4
 
-#define FL_EN		6
-#define FL_FORWARD 	7
-#define FL_BACKWARD 8
+#define FL_EN		5
+#define FL_FORWARD 	6
+#define FL_BACKWARD 7
 
-#define BL_EN		6
-#define BL_FORWARD  7
-#define BL_BACKWARD 8
+#define BL_EN		5
+#define BL_FORWARD  6
+#define BL_BACKWARD 7
 
 #define BR_EN		3
-#define BR_FORWARD	4
-#define BR_BACKWARD	5
+#define BR_FORWARD	2
+#define BR_BACKWARD	4
 
-#define US_TRIG 12
-#define US_ECHO 13
+#define FRONT_TRIG 12
+#define FRONT_ECHO 13
+
+#define RIGHT_TRIG 10
+#define RIGHT_ECHO 11
+
+#define LEFT_TRIG 8
+#define LEFT_ECHO 9
 
 #define ZERO  126
 #define SPEED 255
@@ -93,7 +99,7 @@ class Ultrasonic {
       pinMode(pinEcho, INPUT);
     }
 
-    void send_distance() {
+    uint8_t send_distance() {
       long duration;
       float distance;
 
@@ -103,16 +109,20 @@ class Ultrasonic {
       delayMicroseconds(10);
       digitalWrite(pinTrig, LOW);
 
-      duration = pulseIn(US_ECHO, HIGH);
+      duration = pulseIn(pinEcho, HIGH);
       distance = (duration*.0343)/2;
+      uint8_t distanceByte;
       
-      uint8_t header = 0xAA;
-      uint8_t distanceByte = (uint8_t)distance;
 
-      Serial.write(&header, 1);
-      Serial.write(&distanceByte, 1);
 
-      delay(100);
+      if (distance >= 255) {
+        distanceByte = (uint8_t) 255;
+      }
+      else  {
+        distanceByte = (uint8_t)distance;
+      }
+
+      return(distanceByte);
     }
 };
 
@@ -128,28 +138,42 @@ Wheel backRight(BR_EN, BR_FORWARD, BR_BACKWARD);
 
 Wheel wheelAr[4] = {frontLeft, backLeft,frontRight, backRight};
 
-Ultrasonic frontSense(US_TRIG, US_ECHO);
+Ultrasonic frontSense(FRONT_TRIG, FRONT_ECHO);
+Ultrasonic rightSense(RIGHT_TRIG, RIGHT_ECHO);
+Ultrasonic leftSense(LEFT_TRIG, LEFT_ECHO);
 
 void control_process(void) {
-  if (Serial.available() > 0) {
+  while (Serial.available() > 0) {
 
-    byte data[2]; // Left, Right 
-    Serial.readBytes(data, 2);
+    byte data[3]; // Left, Right 
+    Serial.readBytes(data, 3);
 
-    for (int i=0; i<2; i++) {
-      wheelAr[i*2].tele_drive(data[i]);
-      wheelAr[i*2+1].tele_drive(data[i]);
+    if (data[0] == 255) {
+      for (int i=0; i<2; i++) {
+        wheelAr[i*2].tele_drive(data[i+1]);
+        wheelAr[i*2+1].tele_drive(data[i+1]);
+      }
     }
   }
 
-  frontSense.send_distance();
+  uint8_t header = 0xAA;
+
+  uint8_t front_byte = frontSense.send_distance();
+  uint8_t right_byte = rightSense.send_distance();
+  uint8_t left_byte = leftSense.send_distance();
+
+  uint8_t ultrasonic_data[4] = {header, front_byte, right_byte, left_byte};
+
+  Serial.write(ultrasonic_data, 4);
+
+  delay(100);
 }
 
 bool forward = true;
 void test_process(void) {
   for (int i=0; i<2; i++) {
-    wheelAr[i].test_drive(150, forward);
-    wheelAr[i+1].test_drive(150, !forward);
+    wheelAr[i*2].drive(150, forward);
+    wheelAr[i*2+1].drive(150, !forward);
   }
   delay(2500);
   forward = !forward;
@@ -162,10 +186,12 @@ void test_process(void) {
 
 void setup()
 {
+  //Serial.begin(9600); // for testing
   Serial.begin(115200);
 }
 
 void loop()
 {
+  //test_process(); // for testing
   control_process();
 }
