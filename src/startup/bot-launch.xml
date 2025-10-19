@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
   <node pkg="serial_comms" exec="serial" name="serial" namespace="bot" />
-<<<<<<< HEAD
-  <node pkg="serial_comms" exec="motorcontrol" name="montrollingit" namespace="bot" />
-=======
   <node pkg="serial_comms" exec="motorcontroller" name="motor_controller_node" namespace="bot" />
->>>>>>> 29d4924361a9051a385446f9fa7bf3115587309e
 </launch>
