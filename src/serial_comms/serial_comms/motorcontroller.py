@@ -50,9 +50,9 @@ class MotorControllerNode(Node):
     def turn(self, message, dir, duration):   
         if dir == "right":
             message.left_wheels = FORWARD_VAL
-            message.right_wheels = FORWARD_VAL
+            message.right_wheels = BACKWARD_VAL
         else: # assume left
-            message.left_wheels = FORWARD_VAL
+            message.left_wheels = BACKWARD_VAL
             message.right_wheels = FORWARD_VAL
         self.get_logger().info("Turning")
         self.publisher.publish(message)
