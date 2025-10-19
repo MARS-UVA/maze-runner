@@ -21,11 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'serial = serial_comms.serial_node:main',
-<<<<<<< HEAD
-            'motorcontrol = serial_comms.motorcontrol:main'
-=======
-            'motorcontroller = serial_comms.motorcontroller:main',
->>>>>>> 29d4924361a9051a385446f9fa7bf3115587309e
+            'motorcontroller = serial_comms.motorcontroller:main'
         ],
     },
 )
