@@ -36,7 +36,7 @@ class MotorControllerNode(Node):
                 message.left_wheels = FORWARD_VAL
                 message.right_wheels = FORWARD_VAL
                 self.publisher.publish(message)
-                time.sleep(0.1)
+                time.sleep(1)
         elif feedback.front_sensor > FRONT_DIST: # go forward
             message.left_wheels = FORWARD_VAL
             message.right_wheels = FORWARD_VAL
@@ -47,7 +47,7 @@ class MotorControllerNode(Node):
                 message.left_wheels = FORWARD_VAL
                 message.right_wheels = FORWARD_VAL
                 self.publisher.publish(message)
-                time.sleep(0.1)
+                time.sleep(1)
         else: # turn around
             self.turn(message, "left", TURN_TIME)
             self.turn(message, "left", TURN_TIME)
@@ -55,7 +55,7 @@ class MotorControllerNode(Node):
                 message.left_wheels = FORWARD_VAL
                 message.right_wheels = FORWARD_VAL
                 self.publisher.publish(message)
-                time.sleep(0.1)
+                time.sleep(1)
 
     def turn(self, message, dir, duration):   
         if dir == "right":
