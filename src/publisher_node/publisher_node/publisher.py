@@ -50,6 +50,17 @@ class SampleNode(Node):
         time.sleep(2/3)
     
 
+    def turn_around(self, message):
+        # turn velocities
+        r_velo, l_velo = 70, 230
+        self.get_logger().info(f"jsadhfjhsdjafhjdahsfjhdjkfhdjshafjdkshfjkashdkfjhdsjkakf: glob")
+        # publish
+        message.right_wheels = r_velo
+        message.left_wheels = l_velo
+        self.publisher.publish(message)
+        # stop listening to sensors for duration of the turn (2sec)
+        time.sleep(4/3)
+
     def send_velocity(self, feedback):
         message = MotorCurrents()
         r_velo = 160
@@ -66,7 +77,7 @@ class SampleNode(Node):
             r_velo = 127
             l_velo = 127
         else:
-            self.turn_right(message)
+            self.turn_around(message)
 
 
 
