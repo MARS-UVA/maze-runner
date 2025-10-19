@@ -32,6 +32,10 @@ class SampleNode(Node):
         self.publisher.publish(message)
         # stop listening to sensors for duration of the turn (2sec)
         time.sleep(2/3)
+        # go forward after turning left
+        message.right_wheels = 160
+        message.left_wheels = 160
+        self.publisher.publish(message)
         
 
     def turn_right(self, message):
