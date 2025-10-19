@@ -36,6 +36,7 @@ class SampleNode(Node):
         message.right_wheels = 160
         message.left_wheels = 160
         self.publisher.publish(message)
+        time.sleep(1)
         
 
     def turn_right(self, message):
@@ -52,7 +53,7 @@ class SampleNode(Node):
 
     def turn_around(self, message):
         # turn velocities
-        r_velo, l_velo = 70, 230
+        r_velo, l_velo = 70, 200
         self.get_logger().info(f"jsadhfjhsdjafhjdahsfjhdjkfhdjshafjdkshfjkashdkfjhdsjkakf: glob")
         # publish
         message.right_wheels = r_velo
