@@ -5,8 +5,8 @@ from rclpy.node import Node #type: ignore
 from serial_msgs.msg import MotorCurrents, Feedback
 
 STOP_VAL = 127
-FORWARD_VAL = STOP_VAL + 23
-BACKWARD_VAL = STOP_VAL - 27
+FORWARD_VAL = STOP_VAL + 23 + 30
+BACKWARD_VAL = STOP_VAL - 27 - 30
 LEFT_DIST = 30
 RIGHT_DIST = 30
 FRONT_DIST = 15
@@ -32,20 +32,25 @@ class MotorControllerNode(Node):
         message = MotorCurrents()
         if feedback.left_sensor > LEFT_DIST: # left opening, turn left
             self.turn(message, "left", TURN_TIME)
+            if feedback.front_sensor > FRONT_DIST: # go forward
+                message.left_wheels = FORWARD_VAL
+                message.right_wheels = FORWARD_VAL
+                self.publisher.publish(message)
+                time.sleep(0.2)
         elif feedback.front_sensor > FRONT_DIST: # go forward
             message.left_wheels = FORWARD_VAL
             message.right_wheels = FORWARD_VAL
             self.publisher.publish(message)
         elif feedback.right_sensor > RIGHT_DIST: # right opening, turn right
             self.turn(message, "right", TURN_TIME)
+            if feedback.front_sensor > FRONT_DIST: # go forward
+                message.left_wheels = FORWARD_VAL
+                message.right_wheels = FORWARD_VAL
+                self.publisher.publish(message)
+                time.sleep(0.2)
         else: # turn around
             self.turn(message, "left", TURN_TIME)
             self.turn(message, "left", TURN_TIME)
-        if feedback.front_sensor > FRONT_DIST: # go forward
-            message.left_wheels = FORWARD_VAL
-            message.right_wheels = FORWARD_VAL
-            self.publisher.publish(message)
-            time.sleep(0.5)
 
     def turn(self, message, dir, duration):   
         if dir == "right":
