@@ -11,7 +11,7 @@ LEFT_DIST = 30
 RIGHT_DIST = 30
 FRONT_DIST = 15
 TURN_TIME = 1.35
-FORWARD_TIME = 0.6
+FORWARD_TIME = 2
 PAUSE_TIME = 1
 
 class MotorControllerNode(Node):
@@ -85,11 +85,9 @@ def main(args=None):
 
 
     node = MotorControllerNode()
-
-
+    
     rclpy.spin(node)
-
-
+    
     node.destroy_node()
     rclpy.shutdown()
 
