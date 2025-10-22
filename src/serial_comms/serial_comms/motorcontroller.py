@@ -26,7 +26,7 @@ class MotorControllerNode(Node):
             msg_type=Feedback,
             topic="feedback",
             callback=self.send_velocity,
-            qos_profile=10
+            qos_profile=10,
             just_turned = False
         )
 
