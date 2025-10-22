@@ -11,7 +11,6 @@ LEFT_DIST = 30
 RIGHT_DIST = 30
 FRONT_DIST = 15
 TURN_TIME = 1.3
-FORWARD_TIME = 2
 PAUSE_TIME = 1
 
 class MotorControllerNode(Node):
@@ -28,34 +27,28 @@ class MotorControllerNode(Node):
             topic="feedback",
             callback=self.send_velocity,
             qos_profile=10
+            just_turned = False
         )
 
     def send_velocity(self, feedback):
         message = MotorCurrents()
-        if feedback.left_sensor > LEFT_DIST: # left opening, turn left
+        if feedback.left_sensor > LEFT_DIST and not self.just_turned: # left opening, turn left
             self.turn(message, "left")
             self.pause(message)
-            if feedback.front_sensor > FRONT_DIST: # go forward
-                self.move_forward(message)
-                self.pause(message)
+            self.just_turned = True
         elif feedback.front_sensor > FRONT_DIST: # go forward
             message.left_wheels = FORWARD_VAL
             message.right_wheels = FORWARD_VAL
             self.publisher.publish(message)
+            self.just_turned = False
         elif feedback.right_sensor > RIGHT_DIST: # right opening, turn right
             self.turn(message, "right")
             self.pause(message)
-            if feedback.front_sensor > FRONT_DIST: # go forward
-                self.move_forward(message)
-                self.pause(message)
         else: # turn around
             self.turn(message, "left")
             self.pause(message)
             self.turn(message, "left")
             self.pause(message)
-            if feedback.front_sensor > FRONT_DIST: # go forward
-                self.move_forward(message)
-                self.pause(message)
 
     def turn(self, message, dir):   
         if dir == "right":
