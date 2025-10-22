@@ -26,9 +26,9 @@ class MotorControllerNode(Node):
             msg_type=Feedback,
             topic="feedback",
             callback=self.send_velocity,
-            qos_profile=10,
-            just_turned = False
+            qos_profile=10
         )
+        self.just_turned = False
 
     def send_velocity(self, feedback):
         message = MotorCurrents()
