@@ -74,8 +74,8 @@ class SuperAwesomeAndRealNode(Node):
             r_velo = 230
             l_velo = 50
         elif dir == "right":
-            r_velo = 60
-            l_velo = 250
+            r_velo = 50
+            l_velo = 230
         # if a direction isn't specified, stop.    
         else:
             r_velo = 127
