@@ -97,7 +97,7 @@ class SuperAwesomeAndRealNode(Node):
             message.right_wheels = r_velo
             self.publisher.publish(message)
             self.get_logger().info("Going Forwards!")
-            time.sleep(0.6)
+            time.sleep(2)
 
    
         
