@@ -89,7 +89,7 @@ class SuperAwesomeAndRealNode(Node):
         self.publisher.publish(message)
         self.get_logger().info(f"Sent da message with {l_velo}, {r_velo}")
         self.is_turning = True
-        time.sleep(0.6)
+        time.sleep(0.67)
         if dir == "left":
             r_velo = 150
             l_velo = 150
